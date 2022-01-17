@@ -39,15 +39,15 @@ namespace ScoringSystemWinFormsUI
             this.eventInputLabel = new System.Windows.Forms.Label();
             this.nameInputLabel = new System.Windows.Forms.Label();
             this.outputTab = new System.Windows.Forms.TabPage();
-            this.dataGridView1 = new System.Windows.Forms.DataGridView();
-            this.contestantNameTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.totalScoreTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.outputTable = new System.Windows.Forms.DataGridView();
             this.writeToFileButton = new System.Windows.Forms.Button();
             this.clearDataButton = new System.Windows.Forms.Button();
+            this.contestantNameTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.totalScoreTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.tabControl.SuspendLayout();
             this.inputTab.SuspendLayout();
             this.outputTab.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.outputTable)).BeginInit();
             this.SuspendLayout();
             // 
             // tabControl
@@ -148,7 +148,7 @@ namespace ScoringSystemWinFormsUI
             // 
             // outputTab
             // 
-            this.outputTab.Controls.Add(this.dataGridView1);
+            this.outputTab.Controls.Add(this.outputTable);
             this.outputTab.Location = new System.Drawing.Point(4, 22);
             this.outputTab.Name = "outputTab";
             this.outputTab.Padding = new System.Windows.Forms.Padding(3);
@@ -157,29 +157,17 @@ namespace ScoringSystemWinFormsUI
             this.outputTab.Text = "View Total Scores";
             this.outputTab.UseVisualStyleBackColor = true;
             // 
-            // dataGridView1
+            // outputTable
             // 
-            this.dataGridView1.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
-            this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridView1.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.outputTable.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
+            this.outputTable.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.outputTable.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.contestantNameTextBoxColumn,
             this.totalScoreTextBoxColumn});
-            this.dataGridView1.Location = new System.Drawing.Point(6, 6);
-            this.dataGridView1.Name = "dataGridView1";
-            this.dataGridView1.Size = new System.Drawing.Size(632, 261);
-            this.dataGridView1.TabIndex = 0;
-            // 
-            // contestantNameTextBoxColumn
-            // 
-            this.contestantNameTextBoxColumn.HeaderText = "Contestant Name";
-            this.contestantNameTextBoxColumn.Name = "contestantNameTextBoxColumn";
-            this.contestantNameTextBoxColumn.ReadOnly = true;
-            // 
-            // totalScoreTextBoxColumn
-            // 
-            this.totalScoreTextBoxColumn.HeaderText = "Total Score";
-            this.totalScoreTextBoxColumn.Name = "totalScoreTextBoxColumn";
-            this.totalScoreTextBoxColumn.ReadOnly = true;
+            this.outputTable.Location = new System.Drawing.Point(6, 6);
+            this.outputTable.Name = "outputTable";
+            this.outputTable.Size = new System.Drawing.Size(632, 261);
+            this.outputTable.TabIndex = 0;
             // 
             // writeToFileButton
             // 
@@ -199,6 +187,18 @@ namespace ScoringSystemWinFormsUI
             this.clearDataButton.Text = "Clear Data";
             this.clearDataButton.UseVisualStyleBackColor = true;
             // 
+            // contestantNameTextBoxColumn
+            // 
+            this.contestantNameTextBoxColumn.HeaderText = "Contestant Name";
+            this.contestantNameTextBoxColumn.Name = "contestantNameTextBoxColumn";
+            this.contestantNameTextBoxColumn.ReadOnly = true;
+            // 
+            // totalScoreTextBoxColumn
+            // 
+            this.totalScoreTextBoxColumn.HeaderText = "Total Score";
+            this.totalScoreTextBoxColumn.Name = "totalScoreTextBoxColumn";
+            this.totalScoreTextBoxColumn.ReadOnly = true;
+            // 
             // ScoringProgram
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -213,7 +213,7 @@ namespace ScoringSystemWinFormsUI
             this.inputTab.ResumeLayout(false);
             this.inputTab.PerformLayout();
             this.outputTab.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.outputTable)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -232,7 +232,7 @@ namespace ScoringSystemWinFormsUI
         private System.Windows.Forms.ComboBox eventInputComboBox;
         private System.Windows.Forms.TextBox rankInputTextBox;
         private System.Windows.Forms.TextBox nameInputTextBox;
-        private System.Windows.Forms.DataGridView dataGridView1;
+        private System.Windows.Forms.DataGridView outputTable;
         private System.Windows.Forms.DataGridViewTextBoxColumn contestantNameTextBoxColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn totalScoreTextBoxColumn;
     }

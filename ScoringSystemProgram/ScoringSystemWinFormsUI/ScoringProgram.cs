@@ -59,8 +59,64 @@ namespace ScoringSystemWinFormsUI
             // Once the selected tab is changed, check if it's the output tab
             if (tabControl.SelectedTab == tabControl.TabPages["outputTab"])
             {
-                // If it is, run the code
+                // Loop through each entry in the eventScores dictionary
+                foreach (KeyValuePair<string, int[]> entry in eventScores)
+                {
+                    string tKey = entry.Key; // Temporary variable to store name
+                    int tValue = 0; // Temporary variable to store total score
 
+                    // Loop over each of the current competitor's scores
+                    // This loop sums all of the event scores into a total
+                    for (int i = 0; i < entry.Value.Length; i++)
+                    {
+                        // Add the score for that event to the total
+                        tValue += entry.Value[i];
+                    }
+
+                    // If the key is already in the totalScores dictionary
+                    if (totalScores.ContainsKey(tKey))
+                    {
+                        // Update the value 
+                        totalScores[tKey] = tValue;
+                    }
+
+                    else // If the key isn't already in totalScores
+                    {
+                        // Add the temporary key and value to total scores
+                        totalScores.Add(new KeyValuePair<string, int>(tKey, tValue));
+                    }
+                }
+
+                // ***TODO*** Make insertion sort method          
+
+                // Clear table before writing data from totalScores to outputTable
+                // Doing this because it prevents duplicated from being added
+                outputTable.DataSource = null;
+
+                // ***NOTE*** This only works if totalScores and the outputTable are in the same row
+
+                // Loop over each row of the output table
+                for (int i = 0; i < totalScores.Count; i++)
+                {
+                    // Get key and value from totalScores to use for comparisons
+                    string currentKey = totalScores.ElementAt(i).Key;
+                    string currentValue = totalScores.ElementAt(i).Value.ToString();
+
+                    // If the current key is found in the name column of the output table
+                    if (currentKey == (string)outputTable.Rows[i].Cells[0].Value)
+                    {
+                        // Set the total score column to the current value... a.k.a current total score
+                        outputTable.Rows[i].Cells[1].Value = currentValue;
+                    }
+                    
+                    else // Else if the key isn't isn't in the name column of the output table
+                    {
+                        // Create a new array that contains the name and total score of a competitor
+                        // Add the row to the DataGridView representing the output table
+                        string[] newRow = new string[2] { currentKey.ToString(), currentValue.ToString() };
+                        outputTable.Rows.Add(newRow);
+                    }
+                }
             }
         }
 
