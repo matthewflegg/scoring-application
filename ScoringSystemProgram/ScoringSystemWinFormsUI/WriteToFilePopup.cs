@@ -13,13 +13,6 @@ namespace ScoringSystemWinFormsUI
 {
     public partial class WriteToFilePopup : Form
     {
-        #region Properties
-
-        // A copy of the dictionary containing the total scores
-        public IDictionary<string, int> totalScoresCopy = new Dictionary<string, int>();
-
-        #endregion
-
         #region Constructor 
 
         /// <summary>
@@ -27,11 +20,10 @@ namespace ScoringSystemWinFormsUI
         /// </summary>
         /// <param name="aTotalScoresCopy"></param>
 
-        public WriteToFilePopup(IDictionary<string, int> aTotalScoresCopy)
+        public WriteToFilePopup()
         {
             // Set the totalScoresCopy property to the parameter passed in
             InitializeComponent();
-            totalScoresCopy = aTotalScoresCopy;
         }
 
         #endregion
@@ -51,8 +43,11 @@ namespace ScoringSystemWinFormsUI
             string filePath = textboxFilePath.Text;   
             StreamWriter sw = new StreamWriter(filePath);
 
+            // Get the total scores dictionary from Initialisation.scoringProgramMainWindow.totalscores
+            IDictionary<string, int> totalScores = Initialisation.scoringProgramMainWindow.totalScores;
+
             // For each item in the total scores dictionary (each contestant)
-            foreach (KeyValuePair<string, int> entry in totalScoresCopy)
+            foreach (KeyValuePair<string, int> entry in totalScores)
             {
                 // Write the key (their name) then a ":", then the value (their total score)
                 sw.WriteLine($"{entry.Key}: {entry.Value}");

@@ -30,7 +30,7 @@ namespace ScoringSystemWinFormsUI
 
         #endregion
 
-        #region Private Helper Methods
+        #region Public Helper Methods
 
         /// <summary>
         /// Clears all of the data in the eventScores and totalScores dictionaries by assigning them new, empty dicts
@@ -38,11 +38,20 @@ namespace ScoringSystemWinFormsUI
         /// <param name="eventScores">The dictionary containing the event scores</param>
         /// <param name="totalScores">The dictionary containing the total scores</param>
         
-        private void ClearScoreDictionaries(ref Dictionary<string, int[]> eventScores, ref Dictionary<string, int> totalScores)
+        public void ClearDictionariesAndDataGridView()
         {
             // Overwrites data in dicts by assigning them empty dicts
             eventScores = new Dictionary<string, int[]>();
             totalScores = new Dictionary<string, int>();
+
+            // If the DataGridView isn't empty
+            if (outputTable.Rows.Count > 0)
+            {
+                // Clear all rows
+                // Then refresh
+                outputTable.Rows.Clear();
+                outputTable.Refresh();
+            }        
         }
 
         #endregion
@@ -185,8 +194,22 @@ namespace ScoringSystemWinFormsUI
             // Instantiate the popup box form
             // Then use writeToFilePopup.Show(); to show the popup
             // Passes in totalScores to the constructor, so we can use it in the write to file form 
-            WriteToFilePopup writeToFilePopup = new WriteToFilePopup(totalScores);
+            WriteToFilePopup writeToFilePopup = new WriteToFilePopup();
             writeToFilePopup.Show();       
+        }
+ 
+        /// <summary>
+        /// Run if the user clicks clear all data. Opens up a confirmation pop up.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+
+        private void clearDataButton_Click(object sender, EventArgs e)
+        {
+            // Instantiate the clear data popup form
+            // Then show the form
+            ClearDataConfirmationPopUp clearDataPopup = new ClearDataConfirmationPopUp();
+            clearDataPopup.Show();
         }
 
         #endregion

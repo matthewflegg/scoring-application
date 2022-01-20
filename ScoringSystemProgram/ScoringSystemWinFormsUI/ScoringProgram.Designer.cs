@@ -199,6 +199,7 @@ namespace ScoringSystemWinFormsUI
             this.clearDataButton.TabIndex = 2;
             this.clearDataButton.Text = "Clear Data";
             this.clearDataButton.UseVisualStyleBackColor = true;
+            this.clearDataButton.Click += new System.EventHandler(this.clearDataButton_Click);
             // 
             // ScoringProgram
             // 

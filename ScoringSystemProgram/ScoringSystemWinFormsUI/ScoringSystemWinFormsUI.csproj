@@ -46,6 +46,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ClearDataConfirmationPopUp.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ClearDataConfirmationPopUp.Designer.cs">
+      <DependentUpon>ClearDataConfirmationPopUp.cs</DependentUpon>
+    </Compile>
     <Compile Include="WriteToFilePopup.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -60,6 +66,9 @@
     </Compile>
     <Compile Include="Initialisation.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="ClearDataConfirmationPopUp.resx">
+      <DependentUpon>ClearDataConfirmationPopUp.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="ScoringProgram.resx">
       <DependentUpon>ScoringProgram.cs</DependentUpon>
     </EmbeddedResource>
