@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.IO;
 
 namespace ScoringSystemWinFormsUI
 {
@@ -24,8 +25,8 @@ namespace ScoringSystemWinFormsUI
         #region Declaring Score Storage Dictionaries
 
         // Creating the eventScores and totalScores dictionaries 
-        private IDictionary<string, int[]> eventScores = new Dictionary<string, int[]>();
-        private IDictionary<string, int> totalScores = new Dictionary<string, int>();
+        public IDictionary<string, int[]> eventScores = new Dictionary<string, int[]>();
+        public IDictionary<string, int> totalScores = new Dictionary<string, int>();
 
         #endregion
 
@@ -171,6 +172,21 @@ namespace ScoringSystemWinFormsUI
             nameInputTextBox.Text = string.Empty;
             rankInputTextBox.Text = string.Empty;
             eventInputComboBox.SelectedIndex = -1;
+        }
+
+        /// <summary>
+        /// This is run if the user clicks 'Write to File.' Opens a new window prompting the user to input a path.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+
+        private void writeToFileButton_Click(object sender, EventArgs e)
+        {
+            // Instantiate the popup box form
+            // Then use writeToFilePopup.Show(); to show the popup
+            // Passes in totalScores to the constructor, so we can use it in the write to file form 
+            WriteToFilePopup writeToFilePopup = new WriteToFilePopup(totalScores);
+            writeToFilePopup.Show();       
         }
 
         #endregion

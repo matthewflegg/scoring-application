@@ -40,10 +40,10 @@ namespace ScoringSystemWinFormsUI
             this.nameInputLabel = new System.Windows.Forms.Label();
             this.outputTab = new System.Windows.Forms.TabPage();
             this.outputTable = new System.Windows.Forms.DataGridView();
-            this.writeToFileButton = new System.Windows.Forms.Button();
-            this.clearDataButton = new System.Windows.Forms.Button();
             this.contestantNameTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.totalScoreTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.writeToFileButton = new System.Windows.Forms.Button();
+            this.clearDataButton = new System.Windows.Forms.Button();
             this.tabControl.SuspendLayout();
             this.inputTab.SuspendLayout();
             this.outputTab.SuspendLayout();
@@ -169,24 +169,6 @@ namespace ScoringSystemWinFormsUI
             this.outputTable.Size = new System.Drawing.Size(632, 261);
             this.outputTable.TabIndex = 0;
             // 
-            // writeToFileButton
-            // 
-            this.writeToFileButton.Location = new System.Drawing.Point(12, 12);
-            this.writeToFileButton.Name = "writeToFileButton";
-            this.writeToFileButton.Size = new System.Drawing.Size(75, 23);
-            this.writeToFileButton.TabIndex = 1;
-            this.writeToFileButton.Text = "Write to File";
-            this.writeToFileButton.UseVisualStyleBackColor = true;
-            // 
-            // clearDataButton
-            // 
-            this.clearDataButton.Location = new System.Drawing.Point(93, 12);
-            this.clearDataButton.Name = "clearDataButton";
-            this.clearDataButton.Size = new System.Drawing.Size(75, 23);
-            this.clearDataButton.TabIndex = 2;
-            this.clearDataButton.Text = "Clear Data";
-            this.clearDataButton.UseVisualStyleBackColor = true;
-            // 
             // contestantNameTextBoxColumn
             // 
             this.contestantNameTextBoxColumn.HeaderText = "Contestant Name";
@@ -198,6 +180,25 @@ namespace ScoringSystemWinFormsUI
             this.totalScoreTextBoxColumn.HeaderText = "Total Score";
             this.totalScoreTextBoxColumn.Name = "totalScoreTextBoxColumn";
             this.totalScoreTextBoxColumn.ReadOnly = true;
+            // 
+            // writeToFileButton
+            // 
+            this.writeToFileButton.Location = new System.Drawing.Point(12, 12);
+            this.writeToFileButton.Name = "writeToFileButton";
+            this.writeToFileButton.Size = new System.Drawing.Size(75, 23);
+            this.writeToFileButton.TabIndex = 1;
+            this.writeToFileButton.Text = "Write to File";
+            this.writeToFileButton.UseVisualStyleBackColor = true;
+            this.writeToFileButton.Click += new System.EventHandler(this.writeToFileButton_Click);
+            // 
+            // clearDataButton
+            // 
+            this.clearDataButton.Location = new System.Drawing.Point(93, 12);
+            this.clearDataButton.Name = "clearDataButton";
+            this.clearDataButton.Size = new System.Drawing.Size(75, 23);
+            this.clearDataButton.TabIndex = 2;
+            this.clearDataButton.Text = "Clear Data";
+            this.clearDataButton.UseVisualStyleBackColor = true;
             // 
             // ScoringProgram
             // 
