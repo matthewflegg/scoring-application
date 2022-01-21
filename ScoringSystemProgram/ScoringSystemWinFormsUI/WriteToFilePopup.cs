@@ -58,7 +58,7 @@ namespace ScoringSystemWinFormsUI
 
             // Display a success message dialog box
             // Then close the write to file pop-up window
-            MessageBox.Show($"Scores successfully saved to {filePath}.");
+            MessageBox.Show($"Scores successfully saved to {filePath}.", "Success");
             this.Close();
         }
 

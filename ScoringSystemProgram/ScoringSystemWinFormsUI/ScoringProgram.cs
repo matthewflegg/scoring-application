@@ -138,6 +138,14 @@ namespace ScoringSystemWinFormsUI
         
         private void enterInputButton_Click(object sender, EventArgs e)
         {
+            // If the amount of contestants currently in the tournament is greater than 10
+            // Show a message box saying that there are no more spaces
+            if (eventScores.Count > 10)
+            {
+                MessageBox.Show("There are no more spaces left in the tournament. There is a maximum of 10", "Error");
+                return;
+            }
+
             // If name is left blank 
             if (string.IsNullOrWhiteSpace(nameInputTextBox.Text))
             {

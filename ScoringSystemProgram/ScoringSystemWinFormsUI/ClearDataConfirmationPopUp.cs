@@ -47,7 +47,7 @@ namespace ScoringSystemWinFormsUI
             // Call the clear score dictionaries and DGV method on the main form 
             // Then show a message saying that the data was cleared successfully
             Initialisation.scoringProgramMainWindow.ClearDictionariesAndDataGridView();
-            MessageBox.Show("The data was cleared successfully.");
+            MessageBox.Show("The data was cleared successfully.", "Success");
 
             // Close window
             this.Close();
