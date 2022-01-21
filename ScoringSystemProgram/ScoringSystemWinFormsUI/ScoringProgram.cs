@@ -30,7 +30,7 @@ namespace ScoringSystemWinFormsUI
 
         #endregion
 
-        #region Public Helper Methods
+        #region Helper Methods
 
         /// <summary>
         /// Clears all of the data in the eventScores and totalScores dictionaries by assigning them new, empty dicts
@@ -138,10 +138,64 @@ namespace ScoringSystemWinFormsUI
         
         private void enterInputButton_Click(object sender, EventArgs e)
         {
-            // Store the inputs in some variables
-            string name = nameInputTextBox.Text;
-            int rank = int.Parse(rankInputTextBox.Text); // ***TODO*** Change int.Parse to int.TryParse
-            int eventNum = eventInputComboBox.SelectedIndex; // ***NOTE*** Maybe selectedIndex - 1? Come back to this
+            // If name is left blank 
+            if (string.IsNullOrWhiteSpace(nameInputTextBox.Text))
+            {
+                // Show an error message saying that the name cannot be blank
+                MessageBox.Show("You cannot leave the name blank.", "Invalid Input");
+                return;
+            }
+
+            // If not blank, store the name in 'name.' Use .Trim() to remove all leading and trailing whitespace
+            string name = nameInputTextBox.Text.Trim();
+
+            // 'rank' will store the rank if int.TryParse returns true
+            // 'isNumber' is true if the text box input could be converted, false if not
+            int rank; 
+            bool isNumber = int.TryParse(rankInputTextBox.Text, out rank);
+
+            // If the input couldn't be converted to an int
+            if (!isNumber)
+            {
+                // Show an error message saying that their input was not a number
+                MessageBox.Show($"'{rankInputTextBox.Text}' is not a valid rank.", "Invalid Input");
+                return;
+            }
+
+            // If input is less than or equal to zero
+            if (rank <= 0)
+            {
+                // Show an error message saying that their input cannot be less than or equal to zero
+                MessageBox.Show($"The rank of contestant cannot be zero or below.", "Invalid Input");
+                return;
+            }
+
+            // Else if rank is greater than 10
+            if (rank > 10)
+            {
+                // Show an error message saying that their input cannot be greater than 10
+                MessageBox.Show("There is a maximum of 10 contestants. Rank cannot be larger than 10.", "Invalid Input");
+                return;
+            }
+
+            // If event is an empty string
+            if (eventInputComboBox.Text == "")
+            {
+                // Show an error message, saying that the event cannot be left empty
+                MessageBox.Show("The event cannot be left empty.", "Invalid Input");
+                return;
+            }
+
+            // If the item inputted isn't an item in the list of options
+            if (!eventInputComboBox.Items.Contains(eventInputComboBox.Text) && eventInputComboBox.Text != "")
+            {
+                // Show an error message, saying that the string isn't an option on the drop-down list
+                MessageBox.Show($"{eventInputComboBox.Text} is an invalid event.", "Invalid Input");
+                return;
+            }
+        
+            // Variable to store the event number 
+            int eventNum = eventInputComboBox.SelectedIndex;
 
             // Set flagging variable, tells us if the name exists in the dictionary
             bool exists = false;
