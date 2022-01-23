@@ -67,7 +67,7 @@ namespace ScoringSystemWinFormsUI
         /// <param name="unsortedDictionary">The unsorted dictionary to sort</param>
         /// <returns>A copy of the unsorted dictionary, after being sorted by value</returns>
 
-        private IDictionary<string, int> InsertionSortDictionaryByValue(IDictionary<string, int> unsortedDictionary)
+        private IDictionary<string, int> InsertionSortDictionaryByValueAscending(IDictionary<string, int> unsortedDictionary)
         {
             // Takes a list and performs an insertion sort
             // Returns a copy of the list, but sorted
@@ -155,6 +155,26 @@ namespace ScoringSystemWinFormsUI
 
             // Return the sorted dictionary
             return sortedDictionary;           
+        }
+
+        private IDictionary<string, int> InsertionSortDictionaryByValueDescending(IDictionary<string, int> unsortedDictionary)
+        {
+            // Sorts the dictionary by value, in ascending order
+            // Then puts it in a new dictionary
+            // Them, create an empty dictiary which we'll use to add values to 
+            IDictionary<string, int> sortedDictionaryAscending = InsertionSortDictionaryByValueAscending(unsortedDictionary);
+            IDictionary<string, int> sortedDictionaryDescending = new Dictionary<string, int>();
+
+            // Start with the last item in the dictionary sorted by ascending order of value
+            // Loop backwards through each item until we reach the first
+            for (int i = sortedDictionaryAscending.Count - 1; i > - 1;  i--)
+            {
+                // Place the item at the start of the new dictionary
+                sortedDictionaryDescending.Add(sortedDictionaryAscending.ElementAt(i));
+            }
+
+            // Then return the dictionary sorted by descending order
+            return sortedDictionaryDescending;
         }
 
         /// <summary>
@@ -387,19 +407,35 @@ namespace ScoringSystemWinFormsUI
         }
 
         /// <summary>
-        /// Run if the user clicks the sort button on the output tab.
+        /// Run if the user clicks the 'Sort (Low to High)' button on the output tab.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
 
-        private void sortButton_Click(object sender, EventArgs e)
+        private void sortByAscendingButton_Click(object sender, EventArgs e)
         {
             // Call sort method to sort the dictionary by value
             // And copy  the data from the dictionary to the output table
-            totalScores = InsertionSortDictionaryByValue(totalScores);
+            totalScores = InsertionSortDictionaryByValueAscending(totalScores);
             CopyDataFromTotalScoresToDataGridView(totalScores);
         }
 
-        #endregion     
+        /// <summary>
+        /// Run if the user clicks the 'Sort (High to Low)' button in the output tab
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+
+        private void sortByDescendingButton_Click(object sender, EventArgs e)
+        {
+            // Call sort method to sort the dictionary by value
+            // And copy  the data from the dictionary to the output table
+            totalScores = InsertionSortDictionaryByValueDescending(totalScores);
+            CopyDataFromTotalScoresToDataGridView(totalScores);
+        }
+
+        #endregion
+
+
     }
 }

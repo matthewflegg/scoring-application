@@ -39,12 +39,13 @@ namespace ScoringSystemWinFormsUI
             this.eventInputLabel = new System.Windows.Forms.Label();
             this.nameInputLabel = new System.Windows.Forms.Label();
             this.outputTab = new System.Windows.Forms.TabPage();
+            this.sortByDescendingButton = new System.Windows.Forms.Button();
+            this.sortByAscendingButton = new System.Windows.Forms.Button();
             this.outputTable = new System.Windows.Forms.DataGridView();
             this.contestantNameTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.totalScoreTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.writeToFileButton = new System.Windows.Forms.Button();
             this.clearDataButton = new System.Windows.Forms.Button();
-            this.sortButton = new System.Windows.Forms.Button();
             this.tabControl.SuspendLayout();
             this.inputTab.SuspendLayout();
             this.outputTab.SuspendLayout();
@@ -149,7 +150,8 @@ namespace ScoringSystemWinFormsUI
             // 
             // outputTab
             // 
-            this.outputTab.Controls.Add(this.sortButton);
+            this.outputTab.Controls.Add(this.sortByDescendingButton);
+            this.outputTab.Controls.Add(this.sortByAscendingButton);
             this.outputTab.Controls.Add(this.outputTable);
             this.outputTab.Location = new System.Drawing.Point(4, 22);
             this.outputTab.Name = "outputTab";
@@ -158,6 +160,26 @@ namespace ScoringSystemWinFormsUI
             this.outputTab.TabIndex = 1;
             this.outputTab.Text = "View Total Scores";
             this.outputTab.UseVisualStyleBackColor = true;
+            // 
+            // sortByDescendingButton
+            // 
+            this.sortByDescendingButton.Location = new System.Drawing.Point(119, 6);
+            this.sortByDescendingButton.Name = "sortByDescendingButton";
+            this.sortByDescendingButton.Size = new System.Drawing.Size(107, 23);
+            this.sortByDescendingButton.TabIndex = 2;
+            this.sortByDescendingButton.Text = "Sort (High to Low)";
+            this.sortByDescendingButton.UseVisualStyleBackColor = true;
+            this.sortByDescendingButton.Click += new System.EventHandler(this.sortByDescendingButton_Click);
+            // 
+            // sortByAscendingButton
+            // 
+            this.sortByAscendingButton.Location = new System.Drawing.Point(6, 6);
+            this.sortByAscendingButton.Name = "sortByAscendingButton";
+            this.sortByAscendingButton.Size = new System.Drawing.Size(107, 23);
+            this.sortByAscendingButton.TabIndex = 1;
+            this.sortByAscendingButton.Text = "Sort (Low to High)";
+            this.sortByAscendingButton.UseVisualStyleBackColor = true;
+            this.sortByAscendingButton.Click += new System.EventHandler(this.sortByAscendingButton_Click);
             // 
             // outputTable
             // 
@@ -203,16 +225,6 @@ namespace ScoringSystemWinFormsUI
             this.clearDataButton.UseVisualStyleBackColor = true;
             this.clearDataButton.Click += new System.EventHandler(this.clearDataButton_Click);
             // 
-            // sortButton
-            // 
-            this.sortButton.Location = new System.Drawing.Point(6, 6);
-            this.sortButton.Name = "sortButton";
-            this.sortButton.Size = new System.Drawing.Size(43, 23);
-            this.sortButton.TabIndex = 1;
-            this.sortButton.Text = "Sort";
-            this.sortButton.UseVisualStyleBackColor = true;
-            this.sortButton.Click += new System.EventHandler(this.sortButton_Click);
-            // 
             // ScoringProgram
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -249,7 +261,8 @@ namespace ScoringSystemWinFormsUI
         private System.Windows.Forms.DataGridView outputTable;
         private System.Windows.Forms.DataGridViewTextBoxColumn contestantNameTextBoxColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn totalScoreTextBoxColumn;
-        private System.Windows.Forms.Button sortButton;
+        private System.Windows.Forms.Button sortByAscendingButton;
+        private System.Windows.Forms.Button sortByDescendingButton;
     }
 }
 
