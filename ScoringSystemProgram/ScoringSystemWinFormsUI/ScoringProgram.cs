@@ -38,12 +38,19 @@ namespace ScoringSystemWinFormsUI
         /// <param name="eventScores">The dictionary containing the event scores</param>
         /// <param name="totalScores">The dictionary containing the total scores</param>
         
-        public void ClearDictionariesAndDataGridView()
+        public void ClearDictionaries()
         {
             // Overwrites data in dicts by assigning them empty dicts
             eventScores = new Dictionary<string, int[]>();
-            totalScores = new Dictionary<string, int>();
+            totalScores = new Dictionary<string, int>();       
+        }
 
+        /// <summary>
+        /// Clears all of the data in the output table and refreshes it.
+        /// </summary>
+
+        public void ClearDataGridView()
+        {
             // If the DataGridView isn't empty
             if (outputTable.Rows.Count > 0)
             {
@@ -51,9 +58,142 @@ namespace ScoringSystemWinFormsUI
                 // Then refresh
                 outputTable.Rows.Clear();
                 outputTable.Refresh();
-            }        
+            }
+        }
+        
+        /// <summary>
+        /// Sorts an array of a dictionary's values, then matches the values to the correct keys.
+        /// </summary>
+        /// <param name="unsortedDictionary">The unsorted dictionary to sort</param>
+        /// <returns>A copy of the unsorted dictionary, after being sorted by value</returns>
+
+        private IDictionary<string, int> InsertionSortDictionaryByValue(IDictionary<string, int> unsortedDictionary)
+        {
+            // Takes a list and performs an insertion sort
+            // Returns a copy of the list, but sorted
+            List<int> InsertionSortList(List<int> unsortedList)
+            {
+                // Create two sublists, first one is a list of all of the item's we've sorted so far
+                // Start by adding the first item in the unsorted list, so we can do value comparisons
+                // Then remove the first item from the unsorted list, since we want to move it
+                List<int> sortedSublist = new List<int>(unsortedList[0]);
+                unsortedList.Remove(0);
+
+                // Now we've moved the first item over, we can store all the unsorted item in an unsorted sublist
+                List<int> unsortedSublist = unsortedList;
+
+                // Each time this loop runs it's a 'pass' of the insertion sort algorithm
+                // We pass through the list again if the unsorted sublist has no items in it, which means the list is sorted
+                while (unsortedSublist.Count > 0)
+                {
+                    // For each item in the unsorted sublist
+                    // ***NOTE*** It kept throwing an argument out of range exception when iterating forwards,
+                    // but when iterating backwards it works fine. hmmmmmmmmm
+                    for (int j = unsortedSublist.Count - 1 ; j > - 1; j--)
+                    {
+                        // Flagging variable that tells us if the unsorted item is smaller than all of the sorted items
+                        // If it is, we'll insert the unsorted item at the start of the sorted list
+                        bool unsortedItemIsSmallerThanAllSortedItems = true;
+
+                        // Compare it to each item in the sorted sublist                      
+                        // We're looping backwards because the sorted sublist is in ascending order, but we want to 
+                        // go through it in descending order to get the largest, then 2nd largest, then 3rd etc.
+                        for (int i = sortedSublist.Count - 1; i > - 1; i--)
+                        {
+                            // If it's larger, insert it into the list after that item
+                            // The break out of the loop because we don't need to compare it to any other items
+                            // If not, go to the next largest item
+                            if (unsortedSublist[j] > sortedSublist[i])
+                            {
+                                sortedSublist.Insert(i + 1, unsortedSublist[j]);
+                                unsortedItemIsSmallerThanAllSortedItems = false;
+                                break;
+                            }
+                        }
+
+                        // If the unsorted item is smaller than all sorted items
+                        // Insert it at the start of the sorted list, since it's the smallest
+                        if (unsortedItemIsSmallerThanAllSortedItems)
+                        {
+                            sortedSublist.Insert(0, unsortedSublist[j]);
+                        }
+
+                        // Now we've moved the item in the unsorted list to the correct place in the sorted list,
+                        // we can remove it from the unsorted list
+                        unsortedSublist.RemoveAt(j);
+                    }
+                }
+
+                // When done, return the sorted sublist, which is now simply the sorted version of the list 
+                return sortedSublist;
+            }
+            
+            // We need a list of sorted values, to compare to all of the keys in the unsorted dict
+            // We do this by running the insertion sort method on the unsorted dictionary values, converted to a list
+            // Then we get a list of the unsorted dictionary's keys, which we use for comparisons
+            List<int> sortedDictionaryValues = InsertionSortList(unsortedDictionary.Values.ToList());
+            List<string> unsortedDictionaryKeys = unsortedDictionary.Keys.ToList();
+
+            // The we create an empty dictionay. We'll add each sorted value, after finding the key that matches it
+            IDictionary<string, int> sortedDictionary = new Dictionary<string, int>();
+
+            // Loop through each item in the list of sorted dictionary values
+            for (int v = 0; v < sortedDictionaryValues.Count; v++)
+            {
+                // For each item in the sorted values list, compare it to the list of keys in the unsorted dictionary
+                for (int k = 0; k < unsortedDictionaryKeys.Count; k++)
+                {
+                    // Once the key that matches the value is found
+                    // Add the key and the value to the empty dictionary we created
+                    // By looping over the sorted dictionary values first, we get a dictionary sorted by values
+                    if (unsortedDictionary[unsortedDictionaryKeys[k]] == sortedDictionaryValues[v])
+                    {
+                        sortedDictionary[unsortedDictionaryKeys[k]] = sortedDictionaryValues[v];
+                    }
+                }
+            }
+
+            // Return the sorted dictionary
+            return sortedDictionary;           
         }
 
+        /// <summary>
+        /// Copies the data in the total scores dictionary to the output table.
+        /// </summary>
+        /// <param name="aTotalScores">The total scores dictionary</param>
+
+        private void CopyDataFromTotalScoresToDataGridView(IDictionary<string, int> aTotalScores)
+        {
+            // Clear table before writing data from totalScores to outputTable
+            // Doing this because it prevents duplicated from being added
+            ClearDataGridView();
+
+            // ***NOTE*** This only works if totalScores and the outputTable are in the same row
+
+            // Loop over each row of the output table
+            for (int i = 0; i < totalScores.Count; i++)
+            {
+                // Get key and value from totalScores to use for comparisons
+                string currentKey = totalScores.ElementAt(i).Key;
+                string currentValue = totalScores.ElementAt(i).Value.ToString();
+
+                // If the current key is found in the name column of the output table
+                if (currentKey == (string)outputTable.Rows[i].Cells[0].Value)
+                {
+                    // Set the total score column to the current value... a.k.a current total score
+                    outputTable.Rows[i].Cells[1].Value = currentValue;
+                }
+
+                else // Else if the key isn't isn't in the name column of the output table
+                {
+                    // Create a new array that contains the name and total score of a competitor
+                    // Add the row to the DataGridView representing the output table
+                    string[] newRow = new string[2] { currentKey.ToString(), currentValue.ToString() };
+                    outputTable.Rows.Add(newRow);
+                }
+            }
+        }
+        
         #endregion
 
         #region Event Methods
@@ -97,36 +237,8 @@ namespace ScoringSystemWinFormsUI
                     }
                 }
 
-                // ***TODO*** Make insertion sort method          
-
-                // Clear table before writing data from totalScores to outputTable
-                // Doing this because it prevents duplicated from being added
-                outputTable.DataSource = null;
-
-                // ***NOTE*** This only works if totalScores and the outputTable are in the same row
-
-                // Loop over each row of the output table
-                for (int i = 0; i < totalScores.Count; i++)
-                {
-                    // Get key and value from totalScores to use for comparisons
-                    string currentKey = totalScores.ElementAt(i).Key;
-                    string currentValue = totalScores.ElementAt(i).Value.ToString();
-
-                    // If the current key is found in the name column of the output table
-                    if (currentKey == (string)outputTable.Rows[i].Cells[0].Value)
-                    {
-                        // Set the total score column to the current value... a.k.a current total score
-                        outputTable.Rows[i].Cells[1].Value = currentValue;
-                    }
-                    
-                    else // Else if the key isn't isn't in the name column of the output table
-                    {
-                        // Create a new array that contains the name and total score of a competitor
-                        // Add the row to the DataGridView representing the output table
-                        string[] newRow = new string[2] { currentKey.ToString(), currentValue.ToString() };
-                        outputTable.Rows.Add(newRow);
-                    }
-                }
+                // Then copy the data from the dictionary to the output table
+                CopyDataFromTotalScoresToDataGridView(totalScores);
             }
         }
 
@@ -274,6 +386,20 @@ namespace ScoringSystemWinFormsUI
             clearDataPopup.Show();
         }
 
-        #endregion
+        /// <summary>
+        /// Run if the user clicks the sort button on the output tab.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+
+        private void sortButton_Click(object sender, EventArgs e)
+        {
+            // Call sort method to sort the dictionary by value
+            // And copy  the data from the dictionary to the output table
+            totalScores = InsertionSortDictionaryByValue(totalScores);
+            CopyDataFromTotalScoresToDataGridView(totalScores);
+        }
+
+        #endregion     
     }
 }

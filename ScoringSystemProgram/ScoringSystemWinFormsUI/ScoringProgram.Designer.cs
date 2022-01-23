@@ -44,6 +44,7 @@ namespace ScoringSystemWinFormsUI
             this.totalScoreTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.writeToFileButton = new System.Windows.Forms.Button();
             this.clearDataButton = new System.Windows.Forms.Button();
+            this.sortButton = new System.Windows.Forms.Button();
             this.tabControl.SuspendLayout();
             this.inputTab.SuspendLayout();
             this.outputTab.SuspendLayout();
@@ -148,6 +149,7 @@ namespace ScoringSystemWinFormsUI
             // 
             // outputTab
             // 
+            this.outputTab.Controls.Add(this.sortButton);
             this.outputTab.Controls.Add(this.outputTable);
             this.outputTab.Location = new System.Drawing.Point(4, 22);
             this.outputTab.Name = "outputTab";
@@ -164,9 +166,9 @@ namespace ScoringSystemWinFormsUI
             this.outputTable.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.contestantNameTextBoxColumn,
             this.totalScoreTextBoxColumn});
-            this.outputTable.Location = new System.Drawing.Point(6, 6);
+            this.outputTable.Location = new System.Drawing.Point(6, 35);
             this.outputTable.Name = "outputTable";
-            this.outputTable.Size = new System.Drawing.Size(632, 261);
+            this.outputTable.Size = new System.Drawing.Size(632, 232);
             this.outputTable.TabIndex = 0;
             // 
             // contestantNameTextBoxColumn
@@ -200,6 +202,16 @@ namespace ScoringSystemWinFormsUI
             this.clearDataButton.Text = "Clear Data";
             this.clearDataButton.UseVisualStyleBackColor = true;
             this.clearDataButton.Click += new System.EventHandler(this.clearDataButton_Click);
+            // 
+            // sortButton
+            // 
+            this.sortButton.Location = new System.Drawing.Point(6, 6);
+            this.sortButton.Name = "sortButton";
+            this.sortButton.Size = new System.Drawing.Size(43, 23);
+            this.sortButton.TabIndex = 1;
+            this.sortButton.Text = "Sort";
+            this.sortButton.UseVisualStyleBackColor = true;
+            this.sortButton.Click += new System.EventHandler(this.sortButton_Click);
             // 
             // ScoringProgram
             // 
@@ -237,6 +249,7 @@ namespace ScoringSystemWinFormsUI
         private System.Windows.Forms.DataGridView outputTable;
         private System.Windows.Forms.DataGridViewTextBoxColumn contestantNameTextBoxColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn totalScoreTextBoxColumn;
+        private System.Windows.Forms.Button sortButton;
     }
 }
 
