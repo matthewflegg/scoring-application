@@ -18,6 +18,10 @@ namespace ScoringSystemWinFormsUI
         public ScoringProgram()
         {
             InitializeComponent();
+
+            // Set sizes
+            MinimumSize = new Size(370, 280);
+            MaximumSize = new Size(590, 475);
         }
 
         #endregion
