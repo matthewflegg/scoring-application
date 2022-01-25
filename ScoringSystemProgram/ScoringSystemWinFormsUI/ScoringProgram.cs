@@ -214,10 +214,13 @@ namespace ScoringSystemWinFormsUI
 
         private void CopyDataFromEventScoresToDataGridView()
         {
+            // Clear the DGV to prevent duplicates
+            ClearDataGridView(eventScoresOutputTable);
+
             // Loop through each entry in the eventScores dictionary
             // This goes through all of the contestants
             foreach (KeyValuePair<string, int[]> entry in eventScores)
-            {
+            {          
                 // Get the contestant name
                 // Then get their scores in each event, stored in an array
                 string currentKey = entry.Key;
@@ -290,9 +293,7 @@ namespace ScoringSystemWinFormsUI
             // Once the selected tab is changed, check if it's the event scores output tab
             else if (tabControl.SelectedTab == tabControl.TabPages["eventOutputTab"])
             {
-                // Clear the DGV to prevent duplicates
-                ClearDataGridView(eventScoresOutputTable);
-
+                // Copy data accross from event scores dictionary
                 CopyDataFromEventScoresToDataGridView();
             }
         }

@@ -125,12 +125,13 @@ namespace ScoringSystemWinFormsUI
             // 
             // enterInputButton
             // 
+            this.enterInputButton.BackColor = System.Drawing.Color.Transparent;
             this.enterInputButton.Location = new System.Drawing.Point(128, 108);
             this.enterInputButton.Name = "enterInputButton";
             this.enterInputButton.Size = new System.Drawing.Size(75, 23);
             this.enterInputButton.TabIndex = 3;
             this.enterInputButton.Text = "Enter";
-            this.enterInputButton.UseVisualStyleBackColor = true;
+            this.enterInputButton.UseVisualStyleBackColor = false;
             this.enterInputButton.Click += new System.EventHandler(this.enterInputButton_Click);
             // 
             // rankInputLabel
@@ -317,10 +318,12 @@ namespace ScoringSystemWinFormsUI
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.BackColor = System.Drawing.Color.White;
             this.ClientSize = new System.Drawing.Size(539, 359);
             this.Controls.Add(this.clearDataButton);
             this.Controls.Add(this.writeToFileButton);
             this.Controls.Add(this.tabControl);
+            this.DoubleBuffered = true;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "ScoringProgram";
             this.Text = "iScores";
@@ -353,7 +356,6 @@ namespace ScoringSystemWinFormsUI
         private System.Windows.Forms.Button sortByDescendingButton;
         private System.Windows.Forms.TabPage eventOutputTab;
         public System.Windows.Forms.DataGridView totalScoresOutputTable;
-        private System.Windows.Forms.TabControl tabControl;
         public System.Windows.Forms.DataGridView eventScoresOutputTable;
         private System.Windows.Forms.DataGridViewTextBoxColumn contestantNameColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn event1ScoreColumn;
@@ -361,6 +363,7 @@ namespace ScoringSystemWinFormsUI
         private System.Windows.Forms.DataGridViewTextBoxColumn event3ScoreColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn event4ScoreColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn event5ScoreColumn;
+        private System.Windows.Forms.TabControl tabControl;
     }
 }
 
