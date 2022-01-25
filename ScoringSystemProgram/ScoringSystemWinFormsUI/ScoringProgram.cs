@@ -1,13 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.IO;
 
 namespace ScoringSystemWinFormsUI
 {
@@ -20,7 +15,7 @@ namespace ScoringSystemWinFormsUI
             InitializeComponent();
 
             // Set sizes
-            MinimumSize = new Size(370, 280);
+            MinimumSize = new Size(510, 340);
             MaximumSize = new Size(590, 475);
         }
 
@@ -50,23 +45,23 @@ namespace ScoringSystemWinFormsUI
         }
 
         /// <summary>
-        /// Clears all of the data in the output table and refreshes it.
+        /// Clears all of the data in a DataGridView and refreshes it.
         /// </summary>
 
-        public void ClearDataGridView()
+        public void ClearDataGridView(DataGridView dataGridViewToClear)
         {
             // If the DataGridView isn't empty
-            if (outputTable.Rows.Count > 0)
+            if (dataGridViewToClear.Rows.Count > 0)
             {
                 // Clear all rows
                 // Then refresh
-                outputTable.Rows.Clear();
-                outputTable.Refresh();
+                dataGridViewToClear.Rows.Clear();
+                dataGridViewToClear.Refresh();
             }
         }
         
         /// <summary>
-        /// Sorts an array of a dictionary's values, then matches the values to the correct keys.
+        /// Sorts an array of a dictionary's values in ascending order, then matches the values to the correct keys.
         /// </summary>
         /// <param name="unsortedDictionary">The unsorted dictionary to sort</param>
         /// <returns>A copy of the unsorted dictionary, after being sorted by value</returns>
@@ -161,6 +156,12 @@ namespace ScoringSystemWinFormsUI
             return sortedDictionary;           
         }
 
+        /// <summary>
+        /// Sorts an array of a dictionary's values, then matches the values to the correct keys, then reverses it.
+        /// </summary>
+        /// <param name="unsortedDictionary">The unsorted dictionary to sort</param>
+        /// <returns>A copy of the unsorted dictionary, after being sorted by value</returns>
+
         private IDictionary<string, int> InsertionSortDictionaryByValueDescending(IDictionary<string, int> unsortedDictionary)
         {
             // Sorts the dictionary by value, in ascending order
@@ -182,15 +183,14 @@ namespace ScoringSystemWinFormsUI
         }
 
         /// <summary>
-        /// Copies the data in the total scores dictionary to the output table.
+        /// Copies the data in the total scores dictionary to the total scores output table.
         /// </summary>
-        /// <param name="aTotalScores">The total scores dictionary</param>
 
-        private void CopyDataFromTotalScoresToDataGridView(IDictionary<string, int> aTotalScores)
+        private void CopyDataFromTotalScoresToDataGridView()
         {
             // Clear table before writing data from totalScores to outputTable
             // Doing this because it prevents duplicated from being added
-            ClearDataGridView();
+            ClearDataGridView(totalScoresOutputTable);
 
             // ***NOTE*** This only works if totalScores and the outputTable are in the same row
 
@@ -201,20 +201,42 @@ namespace ScoringSystemWinFormsUI
                 string currentKey = totalScores.ElementAt(i).Key;
                 string currentValue = totalScores.ElementAt(i).Value.ToString();
 
-                // If the current key is found in the name column of the output table
-                if (currentKey == (string)outputTable.Rows[i].Cells[0].Value)
+                // Create a new array that contains the name and total score of a competitor
+                // Add the row to the DataGridView representing the output table
+                string[] newRow = new string[2] { currentKey.ToString(), currentValue.ToString() };
+                totalScoresOutputTable.Rows.Add(newRow);               
+            }
+        }
+
+        /// <summary>
+        /// Copies the data in the event scores dictionary to the event scores output table.
+        /// </summary>
+
+        private void CopyDataFromEventScoresToDataGridView()
+        {
+            // Loop through each entry in the eventScores dictionary
+            // This goes through all of the contestants
+            foreach (KeyValuePair<string, int[]> entry in eventScores)
+            {
+                // Get the contestant name
+                // Then get their scores in each event, stored in an array
+                string currentKey = entry.Key;
+                int[] currentValues = entry.Value;
+
+                // Create new array for the row to add the the event output table
+                // Set the first element to the name (tKey) as the name is the first column
+                string[] newRow = new string[6];
+                newRow[0] = currentKey;
+
+                // Go through the contestant's score in each event
+                for (int i = 0; i < currentValues.Length; i++)
                 {
-                    // Set the total score column to the current value... a.k.a current total score
-                    outputTable.Rows[i].Cells[1].Value = currentValue;
+                    // Example: The second row (index 1) gets the first score in tValues (index 0)
+                    newRow[i + 1] = currentValues[i].ToString();
                 }
 
-                else // Else if the key isn't isn't in the name column of the output table
-                {
-                    // Create a new array that contains the name and total score of a competitor
-                    // Add the row to the DataGridView representing the output table
-                    string[] newRow = new string[2] { currentKey.ToString(), currentValue.ToString() };
-                    outputTable.Rows.Add(newRow);
-                }
+                // Then, finally, we add the row to the table
+                eventScoresOutputTable.Rows.Add(newRow);
             }
         }
         
@@ -230,8 +252,8 @@ namespace ScoringSystemWinFormsUI
 
         private void tabControl_SelectedIndexChanged(object sender, EventArgs e)
         {
-            // Once the selected tab is changed, check if it's the output tab
-            if (tabControl.SelectedTab == tabControl.TabPages["outputTab"])
+            // Once the selected tab is changed, check if it's the total scores output tab
+            if (tabControl.SelectedTab == tabControl.TabPages["totalsOutputTab"])
             {
                 // Loop through each entry in the eventScores dictionary
                 foreach (KeyValuePair<string, int[]> entry in eventScores)
@@ -262,7 +284,16 @@ namespace ScoringSystemWinFormsUI
                 }
 
                 // Then copy the data from the dictionary to the output table
-                CopyDataFromTotalScoresToDataGridView(totalScores);
+                CopyDataFromTotalScoresToDataGridView();
+            }
+
+            // Once the selected tab is changed, check if it's the event scores output tab
+            else if (tabControl.SelectedTab == tabControl.TabPages["eventOutputTab"])
+            {
+                // Clear the DGV to prevent duplicates
+                ClearDataGridView(eventScoresOutputTable);
+
+                CopyDataFromEventScoresToDataGridView();
             }
         }
 
@@ -370,7 +401,6 @@ namespace ScoringSystemWinFormsUI
                 // Then add the new key and new value to the eventScores dictionary
                 nValue[eventNum] = 11 - rank;
                 eventScores.Add(new KeyValuePair<string, int[]>(nKey, nValue));
-
             }
 
             // Finally, reset text boxes. 
@@ -421,7 +451,7 @@ namespace ScoringSystemWinFormsUI
             // Call sort method to sort the dictionary by value
             // And copy  the data from the dictionary to the output table
             totalScores = InsertionSortDictionaryByValueAscending(totalScores);
-            CopyDataFromTotalScoresToDataGridView(totalScores);
+            CopyDataFromTotalScoresToDataGridView();
         }
 
         /// <summary>
@@ -435,11 +465,9 @@ namespace ScoringSystemWinFormsUI
             // Call sort method to sort the dictionary by value
             // And copy  the data from the dictionary to the output table
             totalScores = InsertionSortDictionaryByValueDescending(totalScores);
-            CopyDataFromTotalScoresToDataGridView(totalScores);
+            CopyDataFromTotalScoresToDataGridView();
         }
 
         #endregion
-
-
     }
 }

@@ -1,11 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace ScoringSystemWinFormsUI
@@ -44,10 +37,16 @@ namespace ScoringSystemWinFormsUI
 
         private void buttonYes_Click(object sender, EventArgs e)
         {
-            // Call the clear score dictionaries and DGV method on the main form 
+            // Get the event scores from the main window 
+            // Then get the total scores from the main window
+            DataGridView eventScoresOutputTable = Initialisation.scoringProgramMainWindow.eventScoresOutputTable;
+            DataGridView totalScoresOutputTable = Initialisation.scoringProgramMainWindow.totalScoresOutputTable;
+
+            // Call the clear score dictionaries and DGV method for both output tables on the main form 
             // Then show a message saying that the data was cleared successfully
             Initialisation.scoringProgramMainWindow.ClearDictionaries();
-            Initialisation.scoringProgramMainWindow.ClearDataGridView();
+            Initialisation.scoringProgramMainWindow.ClearDataGridView(eventScoresOutputTable);
+            Initialisation.scoringProgramMainWindow.ClearDataGridView(totalScoresOutputTable);
             MessageBox.Show("The data was cleared successfully.", "Success");
 
             // Close window
