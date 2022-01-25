@@ -29,6 +29,7 @@ namespace ScoringSystemWinFormsUI
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ClearDataConfirmationPopUp));
             this.labelClearData = new System.Windows.Forms.Label();
             this.buttonNo = new System.Windows.Forms.Button();
             this.buttonYes = new System.Windows.Forms.Button();
@@ -63,7 +64,7 @@ namespace ScoringSystemWinFormsUI
             this.buttonYes.UseVisualStyleBackColor = true;
             this.buttonYes.Click += new System.EventHandler(this.buttonYes_Click);
             // 
-            // ClearDataConfirmation
+            // ClearDataConfirmationPopUp
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -71,7 +72,8 @@ namespace ScoringSystemWinFormsUI
             this.Controls.Add(this.buttonYes);
             this.Controls.Add(this.buttonNo);
             this.Controls.Add(this.labelClearData);
-            this.Name = "ClearDataConfirmation";
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.Name = "ClearDataConfirmationPopUp";
             this.Text = "Clear Data?";
             this.ResumeLayout(false);
             this.PerformLayout();

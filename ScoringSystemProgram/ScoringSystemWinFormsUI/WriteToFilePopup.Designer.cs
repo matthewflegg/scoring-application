@@ -29,6 +29,7 @@ namespace ScoringSystemWinFormsUI
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(WriteToFilePopup));
             this.labelPrompt = new System.Windows.Forms.Label();
             this.textboxFilePath = new System.Windows.Forms.TextBox();
             this.buttonEnterFilePath = new System.Windows.Forms.Button();
@@ -77,6 +78,7 @@ namespace ScoringSystemWinFormsUI
             this.Controls.Add(this.buttonEnterFilePath);
             this.Controls.Add(this.textboxFilePath);
             this.Controls.Add(this.labelPrompt);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "WriteToFilePopup";
             this.Text = "Enter a Path";
             this.ResumeLayout(false);

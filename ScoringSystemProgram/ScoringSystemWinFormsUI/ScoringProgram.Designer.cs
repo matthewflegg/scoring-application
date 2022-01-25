@@ -29,6 +29,7 @@ namespace ScoringSystemWinFormsUI
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ScoringProgram));
             this.tabControl = new System.Windows.Forms.TabControl();
             this.inputTab = new System.Windows.Forms.TabPage();
             this.eventInputComboBox = new System.Windows.Forms.ComboBox();
@@ -320,8 +321,9 @@ namespace ScoringSystemWinFormsUI
             this.Controls.Add(this.clearDataButton);
             this.Controls.Add(this.writeToFileButton);
             this.Controls.Add(this.tabControl);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "ScoringProgram";
-            this.Text = "Scoring System Program";
+            this.Text = "iScores";
             this.tabControl.ResumeLayout(false);
             this.inputTab.ResumeLayout(false);
             this.inputTab.PerformLayout();
