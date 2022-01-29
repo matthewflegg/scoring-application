@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
+using System.Text.RegularExpressions;
 using System.IO;
 
 namespace ScoringSystemWinFormsUI
@@ -244,6 +245,41 @@ namespace ScoringSystemWinFormsUI
             }
         }
         
+        /// <summary>
+        /// Loops through each item in eventScores and sums them, then updates the totalScores dictionary.
+        /// </summary>
+
+        private void UpdateTotalScores()
+        {
+            // Loop through each entry in the eventScores dictionary
+            foreach (KeyValuePair<string, int[]> entry in eventScores)
+            {
+                string tKey = entry.Key; // Temporary variable to store name
+                int tValue = 0; // Temporary variable to store total score
+
+                // Loop over each of the current competitor's scores
+                // This loop sums all of the event scores into a total
+                for (int i = 0; i < entry.Value.Length; i++)
+                {
+                    // Add the score for that event to the total
+                    tValue += entry.Value[i];
+                }
+
+                // If the key is already in the totalScores dictionary
+                if (totalScores.ContainsKey(tKey))
+                {
+                    // Update the value 
+                    totalScores[tKey] = tValue;
+                }
+
+                else // If the key isn't already in totalScores
+                {
+                    // Add the temporary key and value to total scores
+                    totalScores.Add(new KeyValuePair<string, int>(tKey, tValue));
+                }
+            }
+        }
+
         #endregion
 
         #region Event Methods
@@ -258,35 +294,7 @@ namespace ScoringSystemWinFormsUI
         {
             // Once the selected tab is changed, check if it's the total scores output tab
             if (tabControl.SelectedTab == tabControl.TabPages["totalsOutputTab"])
-            {
-                // Loop through each entry in the eventScores dictionary
-                foreach (KeyValuePair<string, int[]> entry in eventScores)
-                {
-                    string tKey = entry.Key; // Temporary variable to store name
-                    int tValue = 0; // Temporary variable to store total score
-
-                    // Loop over each of the current competitor's scores
-                    // This loop sums all of the event scores into a total
-                    for (int i = 0; i < entry.Value.Length; i++)
-                    {
-                        // Add the score for that event to the total
-                        tValue += entry.Value[i];
-                    }
-
-                    // If the key is already in the totalScores dictionary
-                    if (totalScores.ContainsKey(tKey))
-                    {
-                        // Update the value 
-                        totalScores[tKey] = tValue;
-                    }
-
-                    else // If the key isn't already in totalScores
-                    {
-                        // Add the temporary key and value to total scores
-                        totalScores.Add(new KeyValuePair<string, int>(tKey, tValue));
-                    }
-                }
-
+            {          
                 // Then copy the data from the dictionary to the output table
                 CopyDataFromTotalScoresToDataGridView();
             }
@@ -320,6 +328,14 @@ namespace ScoringSystemWinFormsUI
             {
                 // Show an error message saying that the name cannot be blank
                 MessageBox.Show("The name cannot be left empty.", "Invalid Input");
+                return;
+            }
+
+            // Use regex to check if the name isn't made up of alphabetical characters only
+            if (!Regex.IsMatch(nameInputComboBox.Text, "^[a-zA-Z]/gm"))
+            {
+                // Show an error message saying that the name cannot contain any non-alphabetical characters
+                MessageBox.Show("The name cannot contain any non-alphabetical characters.", "Invalid Input");
                 return;
             }
 
@@ -390,6 +406,9 @@ namespace ScoringSystemWinFormsUI
                 eventScores.Add(new KeyValuePair<string, int[]>(nKey, nValue));
             }
 
+            // Then update the total scores
+            UpdateTotalScores();
+
             // Finally, reset text boxes. 
             // Reset combo box to unselected value
             // ***NOTE*** Come back to this
@@ -455,14 +474,6 @@ namespace ScoringSystemWinFormsUI
             {
                 // Set file path to file name user selects               
                 fileName = writeToFileDialog.FileName;
-
-                // If the file name is empty
-                if (string.IsNullOrEmpty(fileName))
-                {
-                    // Show an error message and then return so the code below doesn't run
-                    MessageBox.Show("You cannot leave the file name blank.", "Error Saving File");
-                    return;
-                }
 
                 // Then create a new streamWriter object to write to that file
                 StreamWriter fileWriterObj = new StreamWriter(fileName);
