@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
+using System.IO;
 
 namespace ScoringSystemWinFormsUI
 {
@@ -405,11 +406,79 @@ namespace ScoringSystemWinFormsUI
 
         private void writeToFileButton_Click(object sender, EventArgs e)
         {
-            // Instantiate the popup box form
-            // Then use writeToFilePopup.Show(); to show the popup
-            // Passes in totalScores to the constructor, so we can use it in the write to file form 
-            WriteToFilePopup writeToFilePopup = new WriteToFilePopup();
-            writeToFilePopup.Show();       
+            // Create an array to store all of the scores in
+            // Set the length to the number of scores there are, so we have the right amount of items
+            string[] scoresArray = new string[eventScores.Count];
+
+            // For each empty item in the array that will store our scores as a string
+            for (int i = 0; i < scoresArray.Length; i++)
+            {
+                // Add the contestant's name, which is the key of either eventScores or totalScores
+                // I'm using eventScores but it doesn't really matter which one I use.
+                scoresArray[i] = $"{eventScores.ElementAt(i).Key}: ";
+
+                // Loop through each score for that competitor. It's stored in an array as the value
+                for (int j = 0; j < eventScores.ElementAt(i).Value.Length; j++)
+                {
+                    // Add each score (each j) for the competitor (each i) to the string 
+                    scoresArray[i] += $"{eventScores.ElementAt(i).Value[j]} ";
+                }
+
+                // Finally, add the total score for that competitor to the string
+                // Then move on to the next so that we have a string representation of their scores 
+                scoresArray[i] += $"| Total: {totalScores.ElementAt(i).Value}";
+            }
+
+            // Create a new SaveFileDialog, which gives the user a GUI for saving a file
+            SaveFileDialog writeToFileDialog = new SaveFileDialog();
+
+            // Filter the types of file the results can be saved to, to .txt files only
+            // Set the SaveFileDialog's title text to "Save Results"
+            // Set the directory the UI opens at to C:\ drive
+            // RestoreDirectory = True means that it restores the current directory before closing
+            // Set the default file extension to .txt to make it easier to use
+            writeToFileDialog.Filter = "Text Files (*.txt)|*.txt";
+            writeToFileDialog.Title = "Save Results";
+            writeToFileDialog.InitialDirectory = @"C:\";
+            writeToFileDialog.RestoreDirectory = true;
+            writeToFileDialog.DefaultExt = "txt";
+
+            // Displays a message box if the file path doesn't exist
+            // Then display the save file dialog screen
+            writeToFileDialog.CheckPathExists = true;
+
+            // Create variable to store file path in
+            string fileName; 
+
+            // Shows the save file GUI, this code runs when the user clicks OK
+            if (writeToFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                // Set file path to file name user selects               
+                fileName = writeToFileDialog.FileName;
+
+                // If the file name is empty
+                if (string.IsNullOrEmpty(fileName))
+                {
+                    // Show an error message and then return so the code below doesn't run
+                    MessageBox.Show("You cannot leave the file name blank.", "Error Saving File");
+                    return;
+                }
+
+                // Then create a new streamWriter object to write to that file
+                StreamWriter fileWriterObj = new StreamWriter(fileName);
+
+                // Then for each contestant in the string representation of our scores
+                for (int k = 0; k < scoresArray.Length; k++)
+                {
+                    // Write it as a separate line in the .txt file
+                    fileWriterObj.WriteLine(scoresArray[k]);
+                }
+
+                // Then close our StreamWriter to save 
+                // And display a message saying the file has been saved
+                fileWriterObj.Close();
+                MessageBox.Show("The scores have been successfully saved.", "Success");
+            }
         }
  
         /// <summary>
