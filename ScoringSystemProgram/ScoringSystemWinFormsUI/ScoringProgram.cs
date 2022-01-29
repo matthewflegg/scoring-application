@@ -325,34 +325,9 @@ namespace ScoringSystemWinFormsUI
             // If not blank, store the name in 'name.' Use .Trim() to remove all leading and trailing whitespace
             string name = nameInputTextBox.Text.Trim();
 
-            // 'rank' will store the rank if int.TryParse returns true
-            // 'isNumber' is true if the text box input could be converted, false if not
-            int rank; 
-            bool isNumber = int.TryParse(rankInputTextBox.Text, out rank);
-
-            // If the input couldn't be converted to an int
-            if (!isNumber)
-            {
-                // Show an error message saying that their input was not a number
-                MessageBox.Show($"'{rankInputTextBox.Text}' is not a valid rank.", "Invalid Input");
-                return;
-            }
-
-            // If input is less than or equal to zero
-            if (rank <= 0)
-            {
-                // Show an error message saying that their input cannot be less than or equal to zero
-                MessageBox.Show($"The rank of contestant cannot be zero or below.", "Invalid Input");
-                return;
-            }
-
-            // Else if rank is greater than 10
-            if (rank > 10)
-            {
-                // Show an error message saying that their input cannot be greater than 10
-                MessageBox.Show("There is a maximum of 10 contestants. Rank cannot be larger than 10.", "Invalid Input");
-                return;
-            }
+            // Gets the value from a numericUpDown, casts to an int
+            // Cannot enter anything other than an int because it increments by 1
+            int rank = (int)rankInputNumericUpDown.Value;           
 
             // If event is an empty string
             if (eventInputComboBox.Text == "")
@@ -408,7 +383,7 @@ namespace ScoringSystemWinFormsUI
             // Reset combo box to unselected value
             // ***NOTE*** Come back to this
             nameInputTextBox.Text = string.Empty;
-            rankInputTextBox.Text = string.Empty;
+            rankInputNumericUpDown.Value = 1;
             eventInputComboBox.SelectedIndex = -1;
         }
 

@@ -40,6 +40,8 @@ namespace ScoringSystemWinFormsUI
             // If the exception is of any other type, it runs the catch for the generic exception 
             try
             {
+
+
                 // Create a new StreamWriter object to write to a file
                 StreamWriter fileWriter = new StreamWriter(filePath);
 
