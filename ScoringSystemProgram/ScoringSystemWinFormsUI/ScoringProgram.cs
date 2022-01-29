@@ -332,7 +332,7 @@ namespace ScoringSystemWinFormsUI
             }
 
             // Use regex to check if the name isn't made up of alphabetical characters only
-            if (!Regex.IsMatch(nameInputComboBox.Text, "^[a-zA-Z]/gm"))
+            if (!Regex.IsMatch(nameInputComboBox.Text, "^[a-zA-Z]/g"))
             {
                 // Show an error message saying that the name cannot contain any non-alphabetical characters
                 MessageBox.Show("The name cannot contain any non-alphabetical characters.", "Invalid Input");
