@@ -34,7 +34,6 @@ namespace ScoringSystemWinFormsUI
             this.inputTab = new System.Windows.Forms.TabPage();
             this.rankInputNumericUpDown = new System.Windows.Forms.NumericUpDown();
             this.eventInputComboBox = new System.Windows.Forms.ComboBox();
-            this.nameInputTextBox = new System.Windows.Forms.TextBox();
             this.enterInputButton = new System.Windows.Forms.Button();
             this.rankInputLabel = new System.Windows.Forms.Label();
             this.eventInputLabel = new System.Windows.Forms.Label();
@@ -55,6 +54,7 @@ namespace ScoringSystemWinFormsUI
             this.totalScoreTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.writeToFileButton = new System.Windows.Forms.Button();
             this.clearDataButton = new System.Windows.Forms.Button();
+            this.nameInputComboBox = new System.Windows.Forms.ComboBox();
             this.tabControl.SuspendLayout();
             this.inputTab.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.rankInputNumericUpDown)).BeginInit();
@@ -81,9 +81,9 @@ namespace ScoringSystemWinFormsUI
             // 
             // inputTab
             // 
+            this.inputTab.Controls.Add(this.nameInputComboBox);
             this.inputTab.Controls.Add(this.rankInputNumericUpDown);
             this.inputTab.Controls.Add(this.eventInputComboBox);
-            this.inputTab.Controls.Add(this.nameInputTextBox);
             this.inputTab.Controls.Add(this.enterInputButton);
             this.inputTab.Controls.Add(this.rankInputLabel);
             this.inputTab.Controls.Add(this.eventInputLabel);
@@ -132,13 +132,6 @@ namespace ScoringSystemWinFormsUI
             this.eventInputComboBox.Name = "eventInputComboBox";
             this.eventInputComboBox.Size = new System.Drawing.Size(139, 21);
             this.eventInputComboBox.TabIndex = 6;
-            // 
-            // nameInputTextBox
-            // 
-            this.nameInputTextBox.Location = new System.Drawing.Point(128, 29);
-            this.nameInputTextBox.Name = "nameInputTextBox";
-            this.nameInputTextBox.Size = new System.Drawing.Size(139, 20);
-            this.nameInputTextBox.TabIndex = 4;
             // 
             // enterInputButton
             // 
@@ -331,6 +324,14 @@ namespace ScoringSystemWinFormsUI
             this.clearDataButton.UseVisualStyleBackColor = true;
             this.clearDataButton.Click += new System.EventHandler(this.clearDataButton_Click);
             // 
+            // nameInputComboBox
+            // 
+            this.nameInputComboBox.FormattingEnabled = true;
+            this.nameInputComboBox.Location = new System.Drawing.Point(128, 29);
+            this.nameInputComboBox.Name = "nameInputComboBox";
+            this.nameInputComboBox.Size = new System.Drawing.Size(139, 21);
+            this.nameInputComboBox.TabIndex = 8;
+            // 
             // ScoringProgram
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -366,7 +367,6 @@ namespace ScoringSystemWinFormsUI
         private System.Windows.Forms.Label nameInputLabel;
         private System.Windows.Forms.Button enterInputButton;
         private System.Windows.Forms.ComboBox eventInputComboBox;
-        private System.Windows.Forms.TextBox nameInputTextBox;
         private System.Windows.Forms.DataGridViewTextBoxColumn contestantNameTextBoxColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn totalScoreTextBoxColumn;
         private System.Windows.Forms.Button sortByAscendingButton;
@@ -382,6 +382,7 @@ namespace ScoringSystemWinFormsUI
         private System.Windows.Forms.DataGridViewTextBoxColumn event5ScoreColumn;
         private System.Windows.Forms.TabControl tabControl;
         private System.Windows.Forms.NumericUpDown rankInputNumericUpDown;
+        private System.Windows.Forms.ComboBox nameInputComboBox;
     }
 }
 

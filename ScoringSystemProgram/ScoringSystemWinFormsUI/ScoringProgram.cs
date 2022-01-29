@@ -315,15 +315,25 @@ namespace ScoringSystemWinFormsUI
             }
 
             // If name is left blank 
-            if (string.IsNullOrWhiteSpace(nameInputTextBox.Text))
+            if (string.IsNullOrWhiteSpace(nameInputComboBox.Text))
             {
                 // Show an error message saying that the name cannot be blank
-                MessageBox.Show("You cannot leave the name blank.", "Invalid Input");
+                MessageBox.Show("The name cannot be left empty.", "Invalid Input");
                 return;
             }
 
-            // If not blank, store the name in 'name.' Use .Trim() to remove all leading and trailing whitespace
-            string name = nameInputTextBox.Text.Trim();
+            // Use .Trim() to remove all leading and trailing whitespace
+            // User can enter name manually or select an item from the dropdown
+            // This makes it easier to enter contestants that are already in the score table
+            string name = nameInputComboBox.Text.Trim();
+
+            // If the item entered manually isn't already an option in the dropdown
+            // Add it to the list of options so the user can enter it more easily in future
+            if (!nameInputComboBox.Items.Contains(name))
+            {
+                nameInputComboBox.Items.Add(name);
+            }          
+
 
             // Gets the value from a numericUpDown, casts to an int
             // Cannot enter anything other than an int because it increments by 1
@@ -382,7 +392,7 @@ namespace ScoringSystemWinFormsUI
             // Finally, reset text boxes. 
             // Reset combo box to unselected value
             // ***NOTE*** Come back to this
-            nameInputTextBox.Text = string.Empty;
+            nameInputComboBox.Text = string.Empty;
             rankInputNumericUpDown.Value = 1;
             eventInputComboBox.SelectedIndex = -1;
         }
