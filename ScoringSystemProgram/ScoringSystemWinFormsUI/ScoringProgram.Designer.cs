@@ -39,7 +39,7 @@ namespace ScoringSystemWinFormsUI
             this.rankInputLabel = new System.Windows.Forms.Label();
             this.eventInputLabel = new System.Windows.Forms.Label();
             this.nameInputLabel = new System.Windows.Forms.Label();
-            this.eventOutputTab = new System.Windows.Forms.TabPage();
+            this.eventViewTab = new System.Windows.Forms.TabPage();
             this.eventScoresOutputTable = new System.Windows.Forms.DataGridView();
             this.totalsOutputTab = new System.Windows.Forms.TabPage();
             this.sortByDescendingButton = new System.Windows.Forms.Button();
@@ -55,10 +55,12 @@ namespace ScoringSystemWinFormsUI
             this.event3ScoreColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.event4ScoreColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.event5ScoreColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.eventViewComboBox = new System.Windows.Forms.ComboBox();
+            this.viewByLabel = new System.Windows.Forms.Label();
             this.tabControl.SuspendLayout();
             this.inputTab.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.rankInputNumericUpDown)).BeginInit();
-            this.eventOutputTab.SuspendLayout();
+            this.eventViewTab.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.eventScoresOutputTable)).BeginInit();
             this.totalsOutputTab.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.totalScoresOutputTable)).BeginInit();
@@ -70,7 +72,7 @@ namespace ScoringSystemWinFormsUI
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.tabControl.Controls.Add(this.inputTab);
-            this.tabControl.Controls.Add(this.eventOutputTab);
+            this.tabControl.Controls.Add(this.eventViewTab);
             this.tabControl.Controls.Add(this.totalsOutputTab);
             this.tabControl.Location = new System.Drawing.Point(12, 45);
             this.tabControl.Name = "tabControl";
@@ -129,6 +131,9 @@ namespace ScoringSystemWinFormsUI
             // 
             // eventInputComboBox
             // 
+            this.eventInputComboBox.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
+            this.eventInputComboBox.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
+            this.eventInputComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.eventInputComboBox.FormattingEnabled = true;
             this.eventInputComboBox.Items.AddRange(new object[] {
             "Archery",
@@ -179,15 +184,17 @@ namespace ScoringSystemWinFormsUI
             this.nameInputLabel.TabIndex = 0;
             this.nameInputLabel.Text = "Enter Name";
             // 
-            // eventOutputTab
+            // eventViewTab
             // 
-            this.eventOutputTab.Controls.Add(this.eventScoresOutputTable);
-            this.eventOutputTab.Location = new System.Drawing.Point(4, 22);
-            this.eventOutputTab.Name = "eventOutputTab";
-            this.eventOutputTab.Size = new System.Drawing.Size(507, 276);
-            this.eventOutputTab.TabIndex = 2;
-            this.eventOutputTab.Text = "View Scores by Event";
-            this.eventOutputTab.UseVisualStyleBackColor = true;
+            this.eventViewTab.Controls.Add(this.viewByLabel);
+            this.eventViewTab.Controls.Add(this.eventViewComboBox);
+            this.eventViewTab.Controls.Add(this.eventScoresOutputTable);
+            this.eventViewTab.Location = new System.Drawing.Point(4, 22);
+            this.eventViewTab.Name = "eventViewTab";
+            this.eventViewTab.Size = new System.Drawing.Size(507, 276);
+            this.eventViewTab.TabIndex = 2;
+            this.eventViewTab.Text = "View & Edit Event Results";
+            this.eventViewTab.UseVisualStyleBackColor = true;
             // 
             // eventScoresOutputTable
             // 
@@ -204,9 +211,10 @@ namespace ScoringSystemWinFormsUI
             this.event3ScoreColumn,
             this.event4ScoreColumn,
             this.event5ScoreColumn});
-            this.eventScoresOutputTable.Location = new System.Drawing.Point(4, 4);
+            this.eventScoresOutputTable.Location = new System.Drawing.Point(4, 38);
             this.eventScoresOutputTable.Name = "eventScoresOutputTable";
-            this.eventScoresOutputTable.Size = new System.Drawing.Size(500, 269);
+            this.eventScoresOutputTable.ReadOnly = true;
+            this.eventScoresOutputTable.Size = new System.Drawing.Size(500, 235);
             this.eventScoresOutputTable.TabIndex = 0;
             this.eventScoresOutputTable.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.eventScoresOutputTable_CellValueChanged);
             // 
@@ -302,30 +310,59 @@ namespace ScoringSystemWinFormsUI
             this.event1ScoreColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
             this.event1ScoreColumn.HeaderText = "Archery";
             this.event1ScoreColumn.Name = "event1ScoreColumn";
+            this.event1ScoreColumn.ReadOnly = true;
             // 
             // event2ScoreColumn
             // 
             this.event2ScoreColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
             this.event2ScoreColumn.HeaderText = "Chess";
             this.event2ScoreColumn.Name = "event2ScoreColumn";
+            this.event2ScoreColumn.ReadOnly = true;
             // 
             // event3ScoreColumn
             // 
             this.event3ScoreColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
             this.event3ScoreColumn.HeaderText = "Checkers";
             this.event3ScoreColumn.Name = "event3ScoreColumn";
+            this.event3ScoreColumn.ReadOnly = true;
             // 
             // event4ScoreColumn
             // 
             this.event4ScoreColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
             this.event4ScoreColumn.HeaderText = "Cycling";
             this.event4ScoreColumn.Name = "event4ScoreColumn";
+            this.event4ScoreColumn.ReadOnly = true;
             // 
             // event5ScoreColumn
             // 
             this.event5ScoreColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
             this.event5ScoreColumn.HeaderText = "800m";
             this.event5ScoreColumn.Name = "event5ScoreColumn";
+            this.event5ScoreColumn.ReadOnly = true;
+            // 
+            // eventViewComboBox
+            // 
+            this.eventViewComboBox.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
+            this.eventViewComboBox.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
+            this.eventViewComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.eventViewComboBox.FormattingEnabled = true;
+            this.eventViewComboBox.Items.AddRange(new object[] {
+            "Score",
+            "Rank"});
+            this.eventViewComboBox.Location = new System.Drawing.Point(57, 8);
+            this.eventViewComboBox.Name = "eventViewComboBox";
+            this.eventViewComboBox.Size = new System.Drawing.Size(155, 21);
+            this.eventViewComboBox.TabIndex = 1;
+            this.eventViewComboBox.SelectedIndexChanged += new System.EventHandler(this.eventViewComboBox_SelectedIndexChanged);
+            // 
+            // viewByLabel
+            // 
+            this.viewByLabel.AutoSize = true;
+            this.viewByLabel.Location = new System.Drawing.Point(3, 11);
+            this.viewByLabel.Name = "viewByLabel";
+            this.viewByLabel.Size = new System.Drawing.Size(48, 13);
+            this.viewByLabel.TabIndex = 2;
+            this.viewByLabel.Text = "View By:";
             // 
             // ScoringProgram
             // 
@@ -344,7 +381,8 @@ namespace ScoringSystemWinFormsUI
             this.inputTab.ResumeLayout(false);
             this.inputTab.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.rankInputNumericUpDown)).EndInit();
-            this.eventOutputTab.ResumeLayout(false);
+            this.eventViewTab.ResumeLayout(false);
+            this.eventViewTab.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.eventScoresOutputTable)).EndInit();
             this.totalsOutputTab.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.totalScoresOutputTable)).EndInit();
@@ -366,7 +404,7 @@ namespace ScoringSystemWinFormsUI
         private System.Windows.Forms.DataGridViewTextBoxColumn totalScoreTextBoxColumn;
         private System.Windows.Forms.Button sortByAscendingButton;
         private System.Windows.Forms.Button sortByDescendingButton;
-        private System.Windows.Forms.TabPage eventOutputTab;
+        private System.Windows.Forms.TabPage eventViewTab;
         public System.Windows.Forms.DataGridView totalScoresOutputTable;
         public System.Windows.Forms.DataGridView eventScoresOutputTable;
         private System.Windows.Forms.TabControl tabControl;
@@ -378,6 +416,8 @@ namespace ScoringSystemWinFormsUI
         private System.Windows.Forms.DataGridViewTextBoxColumn event3ScoreColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn event4ScoreColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn event5ScoreColumn;
+        private System.Windows.Forms.Label viewByLabel;
+        private System.Windows.Forms.ComboBox eventViewComboBox;
     }
 }
 

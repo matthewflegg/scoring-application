@@ -188,7 +188,7 @@ namespace ScoringSystemWinFormsUI
         /// Copies the data in the total scores dictionary to the total scores output table.
         /// </summary>
 
-        private void CopyDataFromTotalScoresToDataGridView()
+        private void CopyScoresFromTotalScoresToDataGridView()
         {
             // Clear table before writing data from totalScores to outputTable
             // Doing this because it prevents duplicated from being added
@@ -206,7 +206,7 @@ namespace ScoringSystemWinFormsUI
                 // Create a new array that contains the name and total score of a competitor
                 // Add the row to the DataGridView representing the output table
                 string[] newRow = new string[2] { currentKey.ToString(), currentValue.ToString() };
-                totalScoresOutputTable.Rows.Add(newRow);               
+                totalScoresOutputTable.Rows.Add(newRow);
             }
         }
 
@@ -214,7 +214,7 @@ namespace ScoringSystemWinFormsUI
         /// Copies the data in the event scores dictionary to the event scores output table.
         /// </summary>
 
-        private void CopyDataFromEventScoresToDataGridView()
+        private void CopyScoresFromEventScoresToDataGridView()
         {
             // Clear the DGV to prevent duplicates
             ClearDataGridView(eventScoresOutputTable);
@@ -222,7 +222,7 @@ namespace ScoringSystemWinFormsUI
             // Loop through each entry in the eventScores dictionary
             // This goes through all of the contestants
             foreach (KeyValuePair<string, int[]> entry in eventScores)
-            {          
+            {
                 // Get the contestant name
                 // Then get their scores in each event, stored in an array
                 string currentKey = entry.Key;
@@ -236,6 +236,16 @@ namespace ScoringSystemWinFormsUI
                 // Go through the contestant's score in each event
                 for (int i = 0; i < currentValues.Length; i++)
                 {
+                    // If their score for that event is 0, they didn't take part 
+                    // Because the minimum score is 1
+                    if (currentValues[i] == 0)
+                    {
+                        // So instead show 'N/A'
+                        // Then go straight to the next contestant and don't run the code below
+                        newRow[i + 1] = "N/A";
+                        continue;
+                    }
+
                     // Example: The second row (index 1) gets the first score in tValues (index 0)
                     newRow[i + 1] = currentValues[i].ToString();
                 }
@@ -245,6 +255,53 @@ namespace ScoringSystemWinFormsUI
             }
         }
         
+        /// <summary>
+        /// This code runs if the user switches the view on the event output tab to view by rank.
+        /// </summary>
+
+        private void ConvertEventScoresToRanksAndCopyToDataGridView()
+        {
+            // Clear the DGV to prevent duplicates
+            ClearDataGridView(eventScoresOutputTable);
+
+            // Loop through each entry in the eventScores dictionary
+            // This goes through all of the contestants
+            foreach (KeyValuePair<string, int[]> entry in eventScores)
+            {
+                // Get the contestant name
+                // Then get their scores in each event, stored in an array
+                string currentKey = entry.Key;
+                int[] currentValues = entry.Value;
+
+                // Create new array for the row to add the the event output table
+                // Set the first element to the name (tKey) as the name is the first column
+                string[] newRow = new string[6];
+                newRow[0] = currentKey;
+
+                // Go through the contestant's score in each event
+                for (int i = 0; i < currentValues.Length; i++)
+                {
+                    // If the score is 0, they haven't placed in the competition
+                    // Because they'd have a score of 1 which is the lowest 
+                    if (currentValues[i] == 0)
+                    {
+                        // Therefore, we show 'N/A' in the DGV
+                        // Then go to the next contestant and skip the code below
+                        newRow[i + 1] = "N/A";
+                        continue;
+                    }
+
+                    // Example: The second row (index 1) gets the first score in tValues (index 0)
+                    // Since we're converting the scores to ranks, we use 11 - score 
+                    // This is because score = 11 - rank, so score + rank = 11, meaning rank = 11 - score
+                    newRow[i + 1] = (11 - currentValues[i]).ToString();
+                }
+
+                // Then, finally, we add the row to the table
+                eventScoresOutputTable.Rows.Add(newRow);
+            }
+        }
+
         /// <summary>
         /// Loops through each item in eventScores and sums them, then updates the totalScores dictionary.
         /// </summary>
@@ -280,6 +337,83 @@ namespace ScoringSystemWinFormsUI
             }
         }
 
+        private bool NameIsValid(string nameInput)
+        {
+            // If name is left blank 
+            if (string.IsNullOrWhiteSpace(nameInput))
+            {
+                // Show an error message saying that the name cannot be blank
+                MessageBox.Show("The name cannot be left empty.", "Invalid Input");
+                return false;
+            }
+
+            // Use regex to check if the name isn't made up of alphabetical characters only
+            if (!Regex.IsMatch(nameInput, @"^[a-zA-Z]+$"))
+            {
+                // Show an error message saying that the name cannot contain any non-alphabetical characters
+                MessageBox.Show("The name cannot contain any non-alphabetical characters.", "Invalid Input");
+                return false;
+            }
+
+            // If string is valid, return true
+            return true;
+        }
+
+        private bool RankIsValid(string rankInput)
+        {
+            int rank;
+            bool isNumber = int.TryParse(rankInput, out rank);
+
+            char[] operators = { '+', '-', '*', '/', '%' };
+
+            for (int i = 0; i < rankInput.Length; i++)
+            {
+                for (int j = 0; j < operators.Length; j++)
+                {
+                    if (rankInput[i] == operators[j])
+                    {
+                        MessageBox.Show("The rank cannot contain an expression. Please enter a number", "Invalid Input");
+                        return false;
+                    }
+                }
+            }
+
+            // If input is empty or whitespace
+            if (string.IsNullOrWhiteSpace(rankInput))
+            {
+                // Display error message and return false
+                MessageBox.Show("The rank cannot be left empty.", "Invalid Input");
+                return false;            
+            }
+
+            // If int.TryParse returns false, a.k.a the string couldn't be converted to a number
+            if (!isNumber)
+            {
+                // Display error message and return false
+                MessageBox.Show($"{rankInput} is not a valid input for the rank.", "Invalid Input");
+                return false;
+            }
+
+            // If the rank is above 10
+            if (rank > 10)
+            {
+                // Display error message and return false
+                MessageBox.Show("The rank cannot be above 10.", "Invalid Input");
+                return false;
+            }
+
+            // If the rank is below 1
+            if (rank < 1)
+            {
+                // Display error message and return false
+                MessageBox.Show("The rank cannot be below 1.", "Invalid Input");
+                return false;
+            }
+
+            // If no errors are found, return true
+            return true;
+        }
+
         #endregion
 
         #region Event Methods
@@ -296,14 +430,14 @@ namespace ScoringSystemWinFormsUI
             if (tabControl.SelectedTab == tabControl.TabPages["totalsOutputTab"])
             {          
                 // Then copy the data from the dictionary to the output table
-                CopyDataFromTotalScoresToDataGridView();
+                CopyScoresFromTotalScoresToDataGridView();
             }
 
             // Once the selected tab is changed, check if it's the event scores output tab
-            else if (tabControl.SelectedTab == tabControl.TabPages["eventOutputTab"])
+            else if (tabControl.SelectedTab == tabControl.TabPages["eventViewTab"])
             {
-                // Copy data accross from event scores dictionary
-                CopyDataFromEventScoresToDataGridView();
+                // Copy scores from dictionary to DGV
+                CopyScoresFromEventScoresToDataGridView();
             }
         }
 
@@ -315,39 +449,30 @@ namespace ScoringSystemWinFormsUI
         
         private void enterInputButton_Click(object sender, EventArgs e)
         {
-            // If the amount of contestants currently in the tournament is greater than 10
-            // Show a message box saying that there are no more spaces
+            // If the amount of contestants currently in the tournament is greater than 10           
             if (eventScores.Count > 10)
             {
+                // Show a message box saying that there are no more spaces
                 MessageBox.Show("There are no more spaces left in the tournament. There is a maximum of 10", "Error");
                 return;
             }
 
-            // If name is left blank 
-            if (string.IsNullOrWhiteSpace(nameInputComboBox.Text))
+            // Store our name to validate inside a variable
+            // Trim it, to remove leading and trailing whitespaces
+            string name = nameInputComboBox.Text;
+            name.Trim();
+
+            // If the name isn't valid
+            if (!NameIsValid(name))
             {
-                // Show an error message saying that the name cannot be blank
-                MessageBox.Show("The name cannot be left empty.", "Invalid Input");
+                // Return
                 return;
             }
 
-            // Use regex to check if the name isn't made up of alphabetical characters only
-            if (!Regex.IsMatch(nameInputComboBox.Text, @"^[a-zA-Z]+$"))
-            {
-                // Show an error message saying that the name cannot contain any non-alphabetical characters
-                MessageBox.Show("The name cannot contain any non-alphabetical characters.", "Invalid Input");
-                return;
-            }
-
-            // Use .Trim() to remove all leading and trailing whitespace
-            // User can enter name manually or select an item from the dropdown
-            // This makes it easier to enter contestants that are already in the score table
-            string name = nameInputComboBox.Text.Trim();
-
-            // If the item entered manually isn't already an option in the dropdown
-            // Add it to the list of options so the user can enter it more easily in future
+            // If the item entered manually isn't already an option in the dropdown         
             if (!nameInputComboBox.Items.Contains(name))
             {
+                // Add it to the list of options so the user can enter it more easily in future
                 nameInputComboBox.Items.Add(name);
             }          
 
@@ -361,14 +486,6 @@ namespace ScoringSystemWinFormsUI
             {
                 // Show an error message, saying that the event cannot be left empty
                 MessageBox.Show("The event cannot be left empty.", "Invalid Input");
-                return;
-            }
-
-            // If the item inputted isn't an item in the list of options
-            if (!eventInputComboBox.Items.Contains(eventInputComboBox.Text) && eventInputComboBox.Text != "")
-            {
-                // Show an error message, saying that the string isn't an option on the drop-down list
-                MessageBox.Show($"{eventInputComboBox.Text} is an invalid event.", "Invalid Input");
                 return;
             }
         
@@ -517,7 +634,7 @@ namespace ScoringSystemWinFormsUI
             // Call sort method to sort the dictionary by value
             // And copy  the data from the dictionary to the output table
             totalScores = InsertionSortDictionaryByValueAscending(totalScores);
-            CopyDataFromTotalScoresToDataGridView();
+            CopyScoresFromTotalScoresToDataGridView();
         }
 
         /// <summary>
@@ -531,10 +648,8 @@ namespace ScoringSystemWinFormsUI
             // Call sort method to sort the dictionary by value
             // And copy  the data from the dictionary to the output table
             totalScores = InsertionSortDictionaryByValueDescending(totalScores);
-            CopyDataFromTotalScoresToDataGridView();
-        }
-
-        #endregion
+            CopyScoresFromTotalScoresToDataGridView();
+        }     
 
         /// <summary>
         /// This code is run if the user edits a value in a cell in the event scores output table
@@ -556,7 +671,17 @@ namespace ScoringSystemWinFormsUI
             int changedColIndex = e.ColumnIndex;
 
             // Gets the new value that has been entered, so that we can change the score to it 
-            int changedValue = int.Parse(eventScoresOutputTable.Rows[changedRowIndex].Cells[changedColIndex].Value.ToString());
+            string changedRankToValidate = eventScoresOutputTable.Rows[changedRowIndex].Cells[changedColIndex].Value.ToString();
+
+            // If the changed rank is invalid
+            if (!RankIsValid(changedRankToValidate))
+            {
+                // Return
+                return;
+            }
+
+            // If not then convert it to and integer
+            int changedRank = int.Parse(changedRankToValidate);
 
             // On the same row as the cell value that was changed, find the name associated with it
             // We can simply use the changed row index, to get the row, and cells[0] to get the first col, which is name
@@ -571,12 +696,46 @@ namespace ScoringSystemWinFormsUI
                     // Set the value at index changedColIndex to the changed value
                     // This is because in the DGV, event 1 is at col index 1, event 2 is at col index 2 etc..
                     // But in eventScores, the value is an array where event 1 is index 0, event 2 is index 1 etc..
-                    contestant.Value[changedColIndex - 1] = changedValue; 
+                    contestant.Value[changedColIndex - 1] = changedRank; 
                 }
             }
 
             // Then finally update total scores
             UpdateTotalScores();
         }
+
+        /// <summary>
+        /// If the user changes the value in the combo box labeled 'view by:' run this code.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+
+        private void eventViewComboBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            // If the user chooses to view the event output table by scores...
+            // Copy data accross from event scores dictionary
+            // If no view is selected, it shows scores by default
+            // Scores is the first option so its index is 0, an index of -1 means nothing is selected
+            if (eventViewComboBox.SelectedIndex <= 0)
+            {
+                CopyScoresFromEventScoresToDataGridView();
+
+                // If viewing by score, we don't want the user to edit anything
+                eventScoresOutputTable.ReadOnly = true;
+            }
+
+            // If the user chooses to view the event output table by rank
+            // Convert the event scores to ranks and then copy it to the DGV
+            // Ranks is the second option so its index is 1
+            else if (eventViewComboBox.SelectedIndex == 1)
+            {
+                ConvertEventScoresToRanksAndCopyToDataGridView();
+
+                // If viewing by rank, we want them to be able to edit it so set read only to true
+                eventScoresOutputTable.ReadOnly = false;
+            }
+        }
+
+        #endregion
     }
 }
