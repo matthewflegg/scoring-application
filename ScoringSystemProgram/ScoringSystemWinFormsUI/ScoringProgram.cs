@@ -217,7 +217,7 @@ namespace ScoringSystemWinFormsUI
         private void CopyScoresFromEventScoresToDataGridView()
         {
             // Clear the DGV to prevent duplicates
-            ClearDataGridView(eventScoresOutputTable);
+            ClearDataGridView(eventResultsTable);
 
             // Loop through each entry in the eventScores dictionary
             // This goes through all of the contestants
@@ -251,7 +251,7 @@ namespace ScoringSystemWinFormsUI
                 }
 
                 // Then, finally, we add the row to the table
-                eventScoresOutputTable.Rows.Add(newRow);
+                eventResultsTable.Rows.Add(newRow);
             }
         }
         
@@ -262,7 +262,7 @@ namespace ScoringSystemWinFormsUI
         private void ConvertEventScoresToRanksAndCopyToDataGridView()
         {
             // Clear the DGV to prevent duplicates
-            ClearDataGridView(eventScoresOutputTable);
+            ClearDataGridView(eventResultsTable);
 
             // Loop through each entry in the eventScores dictionary
             // This goes through all of the contestants
@@ -298,7 +298,7 @@ namespace ScoringSystemWinFormsUI
                 }
 
                 // Then, finally, we add the row to the table
-                eventScoresOutputTable.Rows.Add(newRow);
+                eventResultsTable.Rows.Add(newRow);
             }
         }
 
@@ -337,6 +337,12 @@ namespace ScoringSystemWinFormsUI
             }
         }
 
+        /// <summary>
+        /// Determines if a name is valid or not.
+        /// </summary>
+        /// <param name="nameInput"></param>
+        /// <returns></returns>
+
         private bool NameIsValid(string nameInput)
         {
             // If name is left blank 
@@ -358,6 +364,12 @@ namespace ScoringSystemWinFormsUI
             // If string is valid, return true
             return true;
         }
+
+        /// <summary>
+        /// Determines if a rank is valid or not.
+        /// </summary>
+        /// <param name="rankInput"></param>
+        /// <returns></returns>
 
         private bool RankIsValid(string rankInput)
         {
@@ -461,6 +473,13 @@ namespace ScoringSystemWinFormsUI
             // Trim it, to remove leading and trailing whitespaces
             string name = nameInputComboBox.Text;
             name.Trim();
+
+            // If no inputs have been entered, simply do nothing by returning
+            if (string.IsNullOrEmpty(name) && eventInputComboBox.SelectedIndex < 0)
+            {
+                // Return 
+                return;
+            }
 
             // If the name isn't valid
             if (!NameIsValid(name))
@@ -657,10 +676,10 @@ namespace ScoringSystemWinFormsUI
         /// <param name="sender"></param>
         /// <param name="e"></param>
         
-        private void eventScoresOutputTable_CellValueChanged(object sender, DataGridViewCellEventArgs e)
+        private void eventResultsTable_CellValueChanged(object sender, DataGridViewCellEventArgs e)
         {
             // Guard clause to check if the table has no items
-            if (eventScoresOutputTable.Rows.Count < 1)
+            if (eventResultsTable.Rows.Count < 1)
             {
                 // If no items, return
                 return;
@@ -671,7 +690,7 @@ namespace ScoringSystemWinFormsUI
             int changedColIndex = e.ColumnIndex;
 
             // Gets the new value that has been entered, so that we can change the score to it 
-            string changedRankToValidate = eventScoresOutputTable.Rows[changedRowIndex].Cells[changedColIndex].Value.ToString();
+            string changedRankToValidate = eventResultsTable.Rows[changedRowIndex].Cells[changedColIndex].Value.ToString();
 
             // If the changed rank is invalid
             if (!RankIsValid(changedRankToValidate))
@@ -685,7 +704,7 @@ namespace ScoringSystemWinFormsUI
 
             // On the same row as the cell value that was changed, find the name associated with it
             // We can simply use the changed row index, to get the row, and cells[0] to get the first col, which is name
-            string name = eventScoresOutputTable.Rows[changedRowIndex].Cells[0].Value.ToString();
+            string name = eventResultsTable.Rows[changedRowIndex].Cells[0].Value.ToString();
 
             // Loop through all of the event scores
             foreach (KeyValuePair<string, int[]> contestant in eventScores)
@@ -696,7 +715,7 @@ namespace ScoringSystemWinFormsUI
                     // Set the value at index changedColIndex to the changed value
                     // This is because in the DGV, event 1 is at col index 1, event 2 is at col index 2 etc..
                     // But in eventScores, the value is an array where event 1 is index 0, event 2 is index 1 etc..
-                    contestant.Value[changedColIndex - 1] = changedRank; 
+                    contestant.Value[changedColIndex - 1] = 11 - changedRank; 
                 }
             }
 
@@ -721,7 +740,7 @@ namespace ScoringSystemWinFormsUI
                 CopyScoresFromEventScoresToDataGridView();
 
                 // If viewing by score, we don't want the user to edit anything
-                eventScoresOutputTable.ReadOnly = true;
+                eventResultsTable.ReadOnly = true;
             }
 
             // If the user chooses to view the event output table by rank
@@ -732,7 +751,7 @@ namespace ScoringSystemWinFormsUI
                 ConvertEventScoresToRanksAndCopyToDataGridView();
 
                 // If viewing by rank, we want them to be able to edit it so set read only to true
-                eventScoresOutputTable.ReadOnly = false;
+                eventResultsTable.ReadOnly = false;
             }
         }
 

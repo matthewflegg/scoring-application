@@ -39,7 +39,7 @@ namespace ScoringSystemWinFormsUI
         {
             // Get the event scores from the main window 
             // Then get the total scores from the main window
-            DataGridView eventScoresOutputTable = Initialisation.scoringProgramMainWindow.eventScoresOutputTable;
+            DataGridView eventScoresOutputTable = Initialisation.scoringProgramMainWindow.eventResultsTable;
             DataGridView totalScoresOutputTable = Initialisation.scoringProgramMainWindow.totalScoresOutputTable;
 
             // Call the clear score dictionaries and DGV method for both output tables on the main form 
