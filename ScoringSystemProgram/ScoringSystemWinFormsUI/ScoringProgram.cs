@@ -332,7 +332,7 @@ namespace ScoringSystemWinFormsUI
             }
 
             // Use regex to check if the name isn't made up of alphabetical characters only
-            if (!Regex.IsMatch(nameInputComboBox.Text, "^[a-zA-Z]/g"))
+            if (!Regex.IsMatch(nameInputComboBox.Text, @"^[a-zA-Z]+$"))
             {
                 // Show an error message saying that the name cannot contain any non-alphabetical characters
                 MessageBox.Show("The name cannot contain any non-alphabetical characters.", "Invalid Input");
@@ -535,5 +535,48 @@ namespace ScoringSystemWinFormsUI
         }
 
         #endregion
+
+        /// <summary>
+        /// This code is run if the user edits a value in a cell in the event scores output table
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        
+        private void eventScoresOutputTable_CellValueChanged(object sender, DataGridViewCellEventArgs e)
+        {
+            // Guard clause to check if the table has no items
+            if (eventScoresOutputTable.Rows.Count < 1)
+            {
+                // If no items, return
+                return;
+            }
+
+            // Gets the indexes of the changed cell
+            int changedRowIndex = e.RowIndex;
+            int changedColIndex = e.ColumnIndex;
+
+            // Gets the new value that has been entered, so that we can change the score to it 
+            int changedValue = int.Parse(eventScoresOutputTable.Rows[changedRowIndex].Cells[changedColIndex].Value.ToString());
+
+            // On the same row as the cell value that was changed, find the name associated with it
+            // We can simply use the changed row index, to get the row, and cells[0] to get the first col, which is name
+            string name = eventScoresOutputTable.Rows[changedRowIndex].Cells[0].Value.ToString();
+
+            // Loop through all of the event scores
+            foreach (KeyValuePair<string, int[]> contestant in eventScores)
+            {
+                // If the name is in there
+                if (name == contestant.Key)
+                {
+                    // Set the value at index changedColIndex to the changed value
+                    // This is because in the DGV, event 1 is at col index 1, event 2 is at col index 2 etc..
+                    // But in eventScores, the value is an array where event 1 is index 0, event 2 is index 1 etc..
+                    contestant.Value[changedColIndex - 1] = changedValue; 
+                }
+            }
+
+            // Then finally update total scores
+            UpdateTotalScores();
+        }
     }
 }
