@@ -23,11 +23,15 @@ namespace ScoringSystemWinFormsUI
 
         #endregion
 
-        #region Declaring Score Storage Dictionaries
+        #region Fields
 
         // Creating the eventScores and totalScores dictionaries 
         public IDictionary<string, int[]> eventScores = new Dictionary<string, int[]>();
         public IDictionary<string, int> totalScores = new Dictionary<string, int>();
+
+        // Array to store the number of contestants for each event
+        // We then use score numsOfContestants[eventNumber] - rank
+        private int[] numsOfContestants = new int[5];
 
         #endregion
 
@@ -294,7 +298,7 @@ namespace ScoringSystemWinFormsUI
                     // Example: The second row (index 1) gets the first score in tValues (index 0)
                     // Since we're converting the scores to ranks, we use 11 - score 
                     // This is because score = 11 - rank, so score + rank = 11, meaning rank = 11 - score
-                    newRow[i + 1] = (11 - currentValues[i]).ToString();
+                    newRow[i + 1] = (numsOfContestants[i] + 1 - currentValues[i]).ToString();
                 }
 
                 // Then, finally, we add the row to the table
@@ -426,6 +430,34 @@ namespace ScoringSystemWinFormsUI
             return true;
         }
 
+        /// <summary>
+        /// This checks to see if the name of an event is valid
+        /// </summary>
+        /// <param name="nameInput"></param>
+        /// <returns></returns>
+
+        private bool EventNameIsValid(string nameInput, int eventIdx)
+        {
+            // If name is left blank 
+            if (string.IsNullOrWhiteSpace(nameInput))
+            {
+                // Show an error message saying that the name cannot be blank
+                MessageBox.Show($"The name of Event {eventIdx} cannot be left empty.", "Invalid Input");
+                return false;
+            }
+
+            // Use regex to check if the name isn't made up of alphabetical characters only
+            if (!Regex.IsMatch(nameInput, @"^[a-zA-Z]+$"))
+            {
+                // Show an error message saying that the name cannot contain any non-alphabetical characters
+                MessageBox.Show($"The name of Event {eventIdx} cannot contain any non-alphabetical characters.", "Invalid Input");
+                return false;
+            }
+
+            // If string is valid, return true
+            return true;
+        }
+
         #endregion
 
         #region Event Methods
@@ -523,7 +555,7 @@ namespace ScoringSystemWinFormsUI
                     // Calculate rank and store in correct col
                     // Set flag to true so we don't run the if statement that adds a new key 
                     // Then break out of the loop because we already found the right key
-                    entry.Value[eventNum] = 11 - rank;
+                    entry.Value[eventNum] = numsOfContestants[eventNum] + 1 - rank;
                     exists = true;
                     break;
                 }
@@ -715,7 +747,7 @@ namespace ScoringSystemWinFormsUI
                     // Set the value at index changedColIndex to the changed value
                     // This is because in the DGV, event 1 is at col index 1, event 2 is at col index 2 etc..
                     // But in eventScores, the value is an array where event 1 is index 0, event 2 is index 1 etc..
-                    contestant.Value[changedColIndex - 1] = 11 - changedRank; 
+                    contestant.Value[changedColIndex - 1] = numsOfContestants[changedColIndex - 1] + 1 - changedRank; 
                 }
             }
 
@@ -752,6 +784,90 @@ namespace ScoringSystemWinFormsUI
 
                 // If viewing by rank, we want them to be able to edit it so set read only to true
                 eventResultsTable.ReadOnly = false;
+            }
+        }
+
+        /// <summary>
+        /// This is run when the user has finished setting up the events
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        
+        private void finishEventSetup_Click(object sender, EventArgs e)
+        {
+            // Create an array of all of our event name text boxes to loop over           
+            TextBox[] eventNameTextboxes =
+            {
+                event1NameTextBox,
+                event2NameTextBox,
+                event3NameTextBox,
+                event4NameTextBox,
+                event5NameTextBox
+            };
+
+            // Create an array of all of our num. contestant numericUpDowns to loop over
+            NumericUpDown[] numContestantTextBoxes =
+            {
+                event1NumContestants,
+                event2NumContestants,
+                event3NumContestants,
+                event4NumContestants,
+                event5NumContestants
+            };
+
+            // Clear events 
+            eventInputComboBox.Items.Clear();
+
+            // For each of the events
+            for (int i = 0; i < 5; i++)
+            {
+                // Store the current event's name and num. contestants in variables
+                string currentEventName = eventNameTextboxes[i].Text;
+                int currentEventNumContestants = (int)numContestantTextBoxes[i].Value;
+
+                // Remove whitespaces from the event name         
+                currentEventName.Trim();
+
+                // Then validate the event name              
+                if (!EventNameIsValid(currentEventName, i))
+                {
+                    // Return (do nothing)
+                    return;
+                }
+
+                // Then change the options for selecting an event 
+                // And the name of each event in the event view
+                eventInputComboBox.Items.Add(currentEventName);
+                eventResultsTable.Columns[i + 1].HeaderText = currentEventName;
+
+                // Then add the num contestants in the event to the array
+                numsOfContestants[i] = currentEventNumContestants;
+            }
+
+            // Loop through all the pages in our tabControl
+            foreach (TabPage tp in tabControl.TabPages)
+            {
+                // And enable them
+                ((Control)tp).Enabled = false;
+            }
+        }        
+
+        /// <summary>
+        /// This code runs when the form loads.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+
+        private void ScoringProgram_Load(object sender, EventArgs e)
+        {
+            // For each of the pages in our tabcontrol
+            foreach (TabPage tp in tabControl.TabPages)
+            {
+                // Disable all of them except the set up events page
+                if (tp.Name != "setUpEventsPage")
+                {
+                    ((Control)tp).Enabled = false;
+                }            
             }
         }
 
