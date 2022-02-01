@@ -848,7 +848,7 @@ namespace ScoringSystemWinFormsUI
             foreach (TabPage tp in tabControl.TabPages)
             {
                 // And enable them
-                ((Control)tp).Enabled = false;
+                ((Control)tp).Enabled = true;
             }
         }        
 

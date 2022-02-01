@@ -218,7 +218,7 @@ namespace ScoringSystemWinFormsUI
             this.event5NumContestants.Size = new System.Drawing.Size(164, 20);
             this.event5NumContestants.TabIndex = 4;
             this.event5NumContestants.Value = new decimal(new int[] {
-            2,
+            10,
             0,
             0,
             0});
@@ -241,7 +241,7 @@ namespace ScoringSystemWinFormsUI
             this.event4NumContestants.Size = new System.Drawing.Size(164, 20);
             this.event4NumContestants.TabIndex = 3;
             this.event4NumContestants.Value = new decimal(new int[] {
-            2,
+            10,
             0,
             0,
             0});
@@ -264,7 +264,7 @@ namespace ScoringSystemWinFormsUI
             this.event3NumContestants.Size = new System.Drawing.Size(164, 20);
             this.event3NumContestants.TabIndex = 2;
             this.event3NumContestants.Value = new decimal(new int[] {
-            2,
+            10,
             0,
             0,
             0});
@@ -287,7 +287,7 @@ namespace ScoringSystemWinFormsUI
             this.event2NumContestants.Size = new System.Drawing.Size(164, 20);
             this.event2NumContestants.TabIndex = 1;
             this.event2NumContestants.Value = new decimal(new int[] {
-            2,
+            10,
             0,
             0,
             0});
@@ -310,7 +310,7 @@ namespace ScoringSystemWinFormsUI
             this.event1NumContestants.Size = new System.Drawing.Size(164, 20);
             this.event1NumContestants.TabIndex = 0;
             this.event1NumContestants.Value = new decimal(new int[] {
-            2,
+            10,
             0,
             0,
             0});
