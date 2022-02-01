@@ -29,9 +29,16 @@ namespace ScoringSystemWinFormsUI
         public IDictionary<string, int[]> eventScores = new Dictionary<string, int[]>();
         public IDictionary<string, int> totalScores = new Dictionary<string, int>();
 
+        // Tells us if each contestant is in an event or not
+        // We use this to disable input and update the UI
+        public Dictionary<string, bool[]> eventsTakenPartIn = new Dictionary<string, bool[]>();
+
         // Array to store the number of contestants for each event
         // We then use score numsOfContestants[eventNumber] - rank
         private int[] numsOfContestants = new int[5];
+
+        // This will tell us how many spaces are left in each event
+        private int[] spacesLeftInEvents = new int[5];
 
         #endregion
 
@@ -43,11 +50,31 @@ namespace ScoringSystemWinFormsUI
         /// <param name="eventScores">The dictionary containing the event scores</param>
         /// <param name="totalScores">The dictionary containing the total scores</param>
         
-        public void ClearDictionaries()
+        public void ClearFieldsAndResetProgram()
         {
             // Overwrites data in dicts by assigning them empty dicts
             eventScores = new Dictionary<string, int[]>();
-            totalScores = new Dictionary<string, int>();       
+            totalScores = new Dictionary<string, int>();
+            eventsTakenPartIn = new Dictionary<string, bool[]>();
+            numsOfContestants = new int[5];
+            spacesLeftInEvents = new int[5];
+
+            // Selects view by rank by default
+            eventViewComboBox.SelectedIndex = 1;
+
+            // For each of the pages in our tabcontrol
+            foreach (TabPage tp in tabControl.TabPages)
+            {
+                // Disable all of them except the set up events page
+                if (tp.Name != "setUpEventsPage")
+                {
+                    ((Control)tp).Enabled = false;
+                }
+            }
+
+            // Disable uneeded buttons before set up has finshed
+            writeToFileButton.Enabled = false;
+            clearDataButton.Enabled = false;
         }
 
         /// <summary>
@@ -210,7 +237,7 @@ namespace ScoringSystemWinFormsUI
                 // Create a new array that contains the name and total score of a competitor
                 // Add the row to the DataGridView representing the output table
                 string[] newRow = new string[2] { currentKey.ToString(), currentValue.ToString() };
-                totalScoresOutputTable.Rows.Add(newRow);
+                totalScoresOutputTable.Rows.Add(newRow);               
             }
         }
 
@@ -257,6 +284,9 @@ namespace ScoringSystemWinFormsUI
                 // Then, finally, we add the row to the table
                 eventResultsTable.Rows.Add(newRow);
             }
+
+            // Then disable inputs/update UI for contestants not in an event
+            DisableInputForContestantsNotInAnEvent();
         }
         
         /// <summary>
@@ -304,6 +334,9 @@ namespace ScoringSystemWinFormsUI
                 // Then, finally, we add the row to the table
                 eventResultsTable.Rows.Add(newRow);
             }
+
+            // Then disable inputs/update UI for contestants not in an event
+            DisableInputForContestantsNotInAnEvent();
         }
 
         /// <summary>
@@ -375,7 +408,7 @@ namespace ScoringSystemWinFormsUI
         /// <param name="rankInput"></param>
         /// <returns></returns>
 
-        private bool RankIsValid(string rankInput)
+        private bool RankIsValid(string rankInput, int eventIdx)
         {
             int rank;
             bool isNumber = int.TryParse(rankInput, out rank);
@@ -408,13 +441,14 @@ namespace ScoringSystemWinFormsUI
                 // Display error message and return false
                 MessageBox.Show($"{rankInput} is not a valid input for the rank.", "Invalid Input");
                 return false;
-            }
+            }           
 
             // If the rank is above 10
-            if (rank > 10)
+            if (rank > numsOfContestants[eventIdx])
             {
                 // Display error message and return false
-                MessageBox.Show("The rank cannot be above 10.", "Invalid Input");
+                MessageBox.Show($"The rank cannot be above {numsOfContestants[eventIdx]}.\n" +
+                    $"This event has a maximum of {numsOfContestants[eventIdx]} contestants.", "Invalid Input");
                 return false;
             }
 
@@ -458,6 +492,38 @@ namespace ScoringSystemWinFormsUI
             return true;
         }
 
+        /// <summary>
+        /// Disables input in the event results table and updates the UI based on whether a contestant is in an event.
+        /// </summary>
+
+        private void DisableInputForContestantsNotInAnEvent()
+        {
+            // For each contestant in our dictionary that tells us if a contestant is in an event
+            foreach (KeyValuePair<string, bool[]> entry in eventsTakenPartIn)
+            {
+                // Go through all of the rows in the event results DataGridView...
+                for (int i = 0; i < eventResultsTable.Rows.Count; i++)
+                {
+                    // ...Once we've found the contestant 
+                    if ((string)eventResultsTable.Rows[i].Cells[0].Value == entry.Key)
+                    {
+                        // Loop over all the values that tell us if they're in the events
+                        for (int j = 0; j < 5; j++)
+                        {
+                            // If they're not in the event
+                            if (entry.Value[j] == false)
+                            {
+                                // Disable input
+                                // Then set the colour to grey so the user knows its disabled
+                                eventResultsTable.Rows[i].Cells[j + 1].ReadOnly = true;
+                                eventResultsTable.Rows[i].Cells[j + 1].Style.BackColor = Color.Gray;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
         #endregion
 
         #region Event Methods
@@ -493,25 +559,10 @@ namespace ScoringSystemWinFormsUI
         
         private void enterInputButton_Click(object sender, EventArgs e)
         {
-            // If the amount of contestants currently in the tournament is greater than 10           
-            if (eventScores.Count > 10)
-            {
-                // Show a message box saying that there are no more spaces
-                MessageBox.Show("There are no more spaces left in the tournament. There is a maximum of 10", "Error");
-                return;
-            }
-
             // Store our name to validate inside a variable
             // Trim it, to remove leading and trailing whitespaces
             string name = nameInputComboBox.Text;
             name.Trim();
-
-            // If no inputs have been entered, simply do nothing by returning
-            if (string.IsNullOrEmpty(name) && eventInputComboBox.SelectedIndex < 0)
-            {
-                // Return 
-                return;
-            }
 
             // If the name isn't valid
             if (!NameIsValid(name))
@@ -525,64 +576,126 @@ namespace ScoringSystemWinFormsUI
             {
                 // Add it to the list of options so the user can enter it more easily in future
                 nameInputComboBox.Items.Add(name);
-            }          
-
-
-            // Gets the value from a numericUpDown, casts to an int
-            // Cannot enter anything other than an int because it increments by 1
-            int rank = (int)rankInputNumericUpDown.Value;           
-
-            // If event is an empty string
-            if (eventInputComboBox.Text == "")
-            {
-                // Show an error message, saying that the event cannot be left empty
-                MessageBox.Show("The event cannot be left empty.", "Invalid Input");
-                return;
             }
-        
-            // Variable to store the event number 
-            int eventNum = eventInputComboBox.SelectedIndex;
 
-            // Set flagging variable, tells us if the name exists in the dictionary
-            bool exists = false;
-
-            // Loop through each key value pair in the eventScores dictionary
-            foreach (KeyValuePair<string, int[]> entry in eventScores)
+            // Array with all our event check boxes in
+            CheckBox[] eventCheckBoxes =
             {
-                // If name exists
-                if (name == entry.Key)
+                checkBoxEvent1,
+                checkBoxEvent2,
+                checkBoxEvent3,
+                checkBoxEvent4,
+                checkBoxEvent5
+            };
+
+            // Counts how many events have been selected
+            int numEventsSelected = 0;
+
+            // Loops over radio button
+            for (int i = 0; i < 5; i++)
+            {
+                // if checked, add 1 to num events selected
+                if (eventCheckBoxes[i].Checked)
                 {
-                    // Calculate rank and store in correct col
-                    // Set flag to true so we don't run the if statement that adds a new key 
-                    // Then break out of the loop because we already found the right key
-                    entry.Value[eventNum] = numsOfContestants[eventNum] + 1 - rank;
-                    exists = true;
-                    break;
+                    numEventsSelected += 1;
                 }
             }
 
-            if (!exists) // If the name isn't a key in eventScores... exists != true
+            // If num events selected is lower than 4 and they're not in a single event
+            if (numEventsSelected < 4 && !singleEventCheckbox.Checked)
             {
-                // Create a new string with the variable 'name'
-                // Create new array[] with length 5, each item is 0
-                string nKey = name;
-                int[] nValue = new int[5] { 0, 0, 0, 0, 0 };
-
-                // Set the value for the event to 11 - rank... set nValue[eventNum] to 11 - rank
-                // Then add the new key and new value to the eventScores dictionary
-                nValue[eventNum] = 11 - rank;
-                eventScores.Add(new KeyValuePair<string, int[]>(nKey, nValue));
+                // Display a message box and return
+                MessageBox.Show("Each contestant must compete in a minimum of 4 events.\n" +
+                    "Please select the checkbox below if this person will only be in 1 event.", "Error");
+                return;
             }
 
-            // Then update the total scores
-            UpdateTotalScores();
+            // If in single event but more than one is selected
+            if (numEventsSelected > 1 && singleEventCheckbox.Checked)
+            {
+                // Display a message box and return
+                MessageBox.Show("This contestant can only compete in one event.", "Error");
+                return;
+            }
 
-            // Finally, reset text boxes. 
-            // Reset combo box to unselected value
-            // ***NOTE*** Come back to this
-            nameInputComboBox.Text = string.Empty;
-            rankInputNumericUpDown.Value = 1;
-            eventInputComboBox.SelectedIndex = -1;
+            // Finally, add all of the contestants to the input and output table
+            if (eventScores.ContainsKey(name))
+            {
+                MessageBox.Show($"{name} has already been entered as a contestant.", "Contestant Already Entered");
+                return;
+            }
+
+            // Loop through all the radio buttons again
+            for (int i = 0; i < 5; i++)
+            {
+                // If the button is checked but there aren't any spaces left 
+                if (eventCheckBoxes[i].Checked && spacesLeftInEvents[i] <= 0)
+                {
+                    // Show an error message, telling the user which event doesn't have any spaces left, then return
+                    MessageBox.Show($"There are no more spaces left in the following event: {eventCheckBoxes[i].Text}",
+                        "No more spaces");
+                    return;
+                }
+
+                // If the radio button is checked, and if there is at least one space left in the event
+                if (eventCheckBoxes[i].Checked && spacesLeftInEvents[i] > 0)
+                {
+                    // Take one away from the spaces left 
+                    spacesLeftInEvents[i] -= 1;
+                }                
+            }         
+
+            // Add the contestant to the event scores dictionary with scores of 0
+            // And add them to the events taken part in dictionary, by default they're in all events but we'll change this
+            eventScores[name] = new int[5] { 0, 0, 0, 0, 0 };
+            eventsTakenPartIn[name] = new bool[5] { true, true, true, true, true };
+
+            // Then loop 5 times
+            for (int i = 0; i < 5; i++)
+            {
+                // Update the spaces left list box
+                spacesLeftListBox.Items[i] = ($"{eventCheckBoxes[i].Text} | Spaces: {spacesLeftInEvents[i]}");
+
+                // If the contestant isn't in the event
+                if (!eventCheckBoxes[i].Checked)
+                {
+                    // Set the bool that tells us if they take part in that event to false
+                    eventsTakenPartIn[name][i] = false;
+                }          
+            }
+
+            // This will store how many events have no spaces
+            int numEventsWithNoSpaces = 0;
+            
+            // Loop over all the events
+            for (int i = 0; i < spacesLeftInEvents.Length; i++)
+            {
+                // If the event has no spaces
+                if (spacesLeftInEvents[i] == 0)
+                {
+                    // Add 1 to the counter
+                    numEventsWithNoSpaces++;
+                }
+            }
+
+            // If no events have spaces, all of the contestants have been entered
+            if (numEventsWithNoSpaces == 5)
+            {
+                // So we can enable the event view tab and output tab
+                ((Control)eventViewTab).Enabled = true;
+                ((Control)totalsOutputTab).Enabled = true;
+
+                // And then disable to two setup tabs 
+                ((Control)setUpEventsPage).Enabled = false;
+                ((Control)enterContestantsPage).Enabled = false;
+
+                // Then enable write to file button and clear data button
+                writeToFileButton.Enabled = true;
+                clearDataButton.Enabled = true;
+
+                // Show messagebox on successful entry of contestants 
+                MessageBox.Show("All contestants have successfully been entered.", "Set Up Complete");
+            }
         }
 
         /// <summary>
@@ -725,7 +838,7 @@ namespace ScoringSystemWinFormsUI
             string changedRankToValidate = eventResultsTable.Rows[changedRowIndex].Cells[changedColIndex].Value.ToString();
 
             // If the changed rank is invalid
-            if (!RankIsValid(changedRankToValidate))
+            if (!RankIsValid(changedRankToValidate, changedColIndex - 1))
             {
                 // Return
                 return;
@@ -815,8 +928,15 @@ namespace ScoringSystemWinFormsUI
                 event5NumContestants
             };
 
-            // Clear events 
-            eventInputComboBox.Items.Clear();
+            // Array of all our checkboxes for the events
+            CheckBox[] eventCheckBoxes =
+            {
+                checkBoxEvent1,
+                checkBoxEvent2,
+                checkBoxEvent3,
+                checkBoxEvent4,
+                checkBoxEvent5
+            };
 
             // For each of the events
             for (int i = 0; i < 5; i++)
@@ -837,19 +957,24 @@ namespace ScoringSystemWinFormsUI
 
                 // Then change the options for selecting an event 
                 // And the name of each event in the event view
-                eventInputComboBox.Items.Add(currentEventName);
+                eventCheckBoxes[i].Text = currentEventName;
                 eventResultsTable.Columns[i + 1].HeaderText = currentEventName;
 
                 // Then add the num contestants in the event to the array
                 numsOfContestants[i] = currentEventNumContestants;
+                spacesLeftInEvents[i] = numsOfContestants[i];
+
+                // Then add the event to the list box on the enter contestants page that shows spaces left
+                spacesLeftListBox.Items.Add($"{eventCheckBoxes[i].Text} | Spaces: {(int)numContestantTextBoxes[i].Value}");
             }
 
-            // Loop through all the pages in our tabControl
-            foreach (TabPage tp in tabControl.TabPages)
-            {
-                // And enable them
-                ((Control)tp).Enabled = true;
-            }
+            // Show the set up contestants page next
+            // Then set num spaces left to nums of contestants
+            ((Control)enterContestantsPage).Enabled = true;
+            ((Control)setUpEventsPage).Enabled = false;
+
+            // Show a message box after successful setup
+            MessageBox.Show("The tournament's events have been set up successfully.", "Set Up Complete");          
         }        
 
         /// <summary>
@@ -860,6 +985,9 @@ namespace ScoringSystemWinFormsUI
 
         private void ScoringProgram_Load(object sender, EventArgs e)
         {
+            // Selects view by rank by default
+            eventViewComboBox.SelectedIndex = 1;
+
             // For each of the pages in our tabcontrol
             foreach (TabPage tp in tabControl.TabPages)
             {
@@ -869,6 +997,10 @@ namespace ScoringSystemWinFormsUI
                     ((Control)tp).Enabled = false;
                 }            
             }
+
+            // Disable uneeded buttons before set up has finshed
+            writeToFileButton.Enabled = false;
+            clearDataButton.Enabled = false;
         }
 
         #endregion
