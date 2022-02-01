@@ -17,8 +17,8 @@ namespace ScoringSystemWinFormsUI
             InitializeComponent();
 
             // Set sizes
-            MinimumSize = new Size(510, 340);
-            MaximumSize = new Size(590, 475);
+            MinimumSize = new Size(555, 435);
+            MaximumSize = new Size(555, 435);
         }
 
         #endregion
@@ -561,7 +561,7 @@ namespace ScoringSystemWinFormsUI
         {
             // Store our name to validate inside a variable
             // Trim it, to remove leading and trailing whitespaces
-            string name = nameInputComboBox.Text;
+            string name = nameInputTextBox.Text;
             name.Trim();
 
             // If the name isn't valid
@@ -569,13 +569,6 @@ namespace ScoringSystemWinFormsUI
             {
                 // Return
                 return;
-            }
-
-            // If the item entered manually isn't already an option in the dropdown         
-            if (!nameInputComboBox.Items.Contains(name))
-            {
-                // Add it to the list of options so the user can enter it more easily in future
-                nameInputComboBox.Items.Add(name);
             }
 
             // Array with all our event check boxes in

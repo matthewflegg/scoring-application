@@ -56,7 +56,6 @@ namespace ScoringSystemWinFormsUI
             this.event2NameTextBox = new System.Windows.Forms.TextBox();
             this.event1NameTextBox = new System.Windows.Forms.TextBox();
             this.enterContestantsPage = new System.Windows.Forms.TabPage();
-            this.nameInputComboBox = new System.Windows.Forms.ComboBox();
             this.enterInputButton = new System.Windows.Forms.Button();
             this.nameInputLabel = new System.Windows.Forms.Label();
             this.eventViewTab = new System.Windows.Forms.TabPage();
@@ -85,6 +84,10 @@ namespace ScoringSystemWinFormsUI
             this.checkBoxEvent4 = new System.Windows.Forms.CheckBox();
             this.checkBoxEvent5 = new System.Windows.Forms.CheckBox();
             this.spacesLeftListBox = new System.Windows.Forms.ListBox();
+            this.label1 = new System.Windows.Forms.Label();
+            this.nameInputTextBox = new System.Windows.Forms.TextBox();
+            this.label2 = new System.Windows.Forms.Label();
+            this.label3 = new System.Windows.Forms.Label();
             this.tabControl.SuspendLayout();
             this.setUpEventsPage.SuspendLayout();
             this.numContestantsGroupBox.SuspendLayout();
@@ -114,12 +117,13 @@ namespace ScoringSystemWinFormsUI
             this.tabControl.Location = new System.Drawing.Point(12, 45);
             this.tabControl.Name = "tabControl";
             this.tabControl.SelectedIndex = 0;
-            this.tabControl.Size = new System.Drawing.Size(516, 339);
+            this.tabControl.Size = new System.Drawing.Size(515, 339);
             this.tabControl.TabIndex = 0;
             this.tabControl.SelectedIndexChanged += new System.EventHandler(this.tabControl_SelectedIndexChanged);
             // 
             // setUpEventsPage
             // 
+            this.setUpEventsPage.Controls.Add(this.label1);
             this.setUpEventsPage.Controls.Add(this.finishEventSetup);
             this.setUpEventsPage.Controls.Add(this.numContestantsGroupBox);
             this.setUpEventsPage.Controls.Add(this.eventNamesGroupBox);
@@ -132,7 +136,7 @@ namespace ScoringSystemWinFormsUI
             // 
             // finishEventSetup
             // 
-            this.finishEventSetup.Location = new System.Drawing.Point(14, 188);
+            this.finishEventSetup.Location = new System.Drawing.Point(14, 214);
             this.finishEventSetup.Name = "finishEventSetup";
             this.finishEventSetup.Size = new System.Drawing.Size(75, 23);
             this.finishEventSetup.TabIndex = 4;
@@ -152,7 +156,7 @@ namespace ScoringSystemWinFormsUI
             this.numContestantsGroupBox.Controls.Add(this.event3NumContestants);
             this.numContestantsGroupBox.Controls.Add(this.event2NumContestants);
             this.numContestantsGroupBox.Controls.Add(this.event1NumContestants);
-            this.numContestantsGroupBox.Location = new System.Drawing.Point(264, 14);
+            this.numContestantsGroupBox.Location = new System.Drawing.Point(264, 40);
             this.numContestantsGroupBox.Name = "numContestantsGroupBox";
             this.numContestantsGroupBox.Size = new System.Drawing.Size(229, 168);
             this.numContestantsGroupBox.TabIndex = 1;
@@ -331,7 +335,7 @@ namespace ScoringSystemWinFormsUI
             this.eventNamesGroupBox.Controls.Add(this.event3NameTextBox);
             this.eventNamesGroupBox.Controls.Add(this.event2NameTextBox);
             this.eventNamesGroupBox.Controls.Add(this.event1NameTextBox);
-            this.eventNamesGroupBox.Location = new System.Drawing.Point(14, 14);
+            this.eventNamesGroupBox.Location = new System.Drawing.Point(14, 40);
             this.eventNamesGroupBox.Name = "eventNamesGroupBox";
             this.eventNamesGroupBox.Size = new System.Drawing.Size(244, 168);
             this.eventNamesGroupBox.TabIndex = 0;
@@ -420,33 +424,26 @@ namespace ScoringSystemWinFormsUI
             // 
             // enterContestantsPage
             // 
+            this.enterContestantsPage.Controls.Add(this.label2);
+            this.enterContestantsPage.Controls.Add(this.nameInputTextBox);
             this.enterContestantsPage.Controls.Add(this.spacesLeftListBox);
             this.enterContestantsPage.Controls.Add(this.singleEventCheckbox);
             this.enterContestantsPage.Controls.Add(this.eventsGroupBox);
-            this.enterContestantsPage.Controls.Add(this.nameInputComboBox);
             this.enterContestantsPage.Controls.Add(this.enterInputButton);
             this.enterContestantsPage.Controls.Add(this.nameInputLabel);
             this.enterContestantsPage.Cursor = System.Windows.Forms.Cursors.Default;
             this.enterContestantsPage.Location = new System.Drawing.Point(4, 22);
             this.enterContestantsPage.Name = "enterContestantsPage";
             this.enterContestantsPage.Padding = new System.Windows.Forms.Padding(3);
-            this.enterContestantsPage.Size = new System.Drawing.Size(508, 313);
+            this.enterContestantsPage.Size = new System.Drawing.Size(507, 313);
             this.enterContestantsPage.TabIndex = 0;
             this.enterContestantsPage.Text = "Enter Contestants";
             this.enterContestantsPage.UseVisualStyleBackColor = true;
             // 
-            // nameInputComboBox
-            // 
-            this.nameInputComboBox.FormattingEnabled = true;
-            this.nameInputComboBox.Location = new System.Drawing.Point(98, 30);
-            this.nameInputComboBox.Name = "nameInputComboBox";
-            this.nameInputComboBox.Size = new System.Drawing.Size(134, 21);
-            this.nameInputComboBox.TabIndex = 8;
-            // 
             // enterInputButton
             // 
             this.enterInputButton.BackColor = System.Drawing.Color.Transparent;
-            this.enterInputButton.Location = new System.Drawing.Point(32, 252);
+            this.enterInputButton.Location = new System.Drawing.Point(32, 262);
             this.enterInputButton.Name = "enterInputButton";
             this.enterInputButton.Size = new System.Drawing.Size(75, 23);
             this.enterInputButton.TabIndex = 3;
@@ -457,7 +454,7 @@ namespace ScoringSystemWinFormsUI
             // nameInputLabel
             // 
             this.nameInputLabel.AutoSize = true;
-            this.nameInputLabel.Location = new System.Drawing.Point(29, 33);
+            this.nameInputLabel.Location = new System.Drawing.Point(29, 49);
             this.nameInputLabel.Name = "nameInputLabel";
             this.nameInputLabel.Size = new System.Drawing.Size(66, 13);
             this.nameInputLabel.TabIndex = 0;
@@ -465,12 +462,13 @@ namespace ScoringSystemWinFormsUI
             // 
             // eventViewTab
             // 
+            this.eventViewTab.Controls.Add(this.label3);
             this.eventViewTab.Controls.Add(this.viewByLabel);
             this.eventViewTab.Controls.Add(this.eventViewComboBox);
             this.eventViewTab.Controls.Add(this.eventResultsTable);
             this.eventViewTab.Location = new System.Drawing.Point(4, 22);
             this.eventViewTab.Name = "eventViewTab";
-            this.eventViewTab.Size = new System.Drawing.Size(508, 313);
+            this.eventViewTab.Size = new System.Drawing.Size(507, 313);
             this.eventViewTab.TabIndex = 2;
             this.eventViewTab.Text = "View & Edit Event Results";
             this.eventViewTab.UseVisualStyleBackColor = true;
@@ -478,7 +476,7 @@ namespace ScoringSystemWinFormsUI
             // viewByLabel
             // 
             this.viewByLabel.AutoSize = true;
-            this.viewByLabel.Location = new System.Drawing.Point(3, 11);
+            this.viewByLabel.Location = new System.Drawing.Point(3, 36);
             this.viewByLabel.Name = "viewByLabel";
             this.viewByLabel.Size = new System.Drawing.Size(48, 13);
             this.viewByLabel.TabIndex = 2;
@@ -493,7 +491,7 @@ namespace ScoringSystemWinFormsUI
             this.eventViewComboBox.Items.AddRange(new object[] {
             "Score",
             "Rank"});
-            this.eventViewComboBox.Location = new System.Drawing.Point(57, 8);
+            this.eventViewComboBox.Location = new System.Drawing.Point(57, 33);
             this.eventViewComboBox.Name = "eventViewComboBox";
             this.eventViewComboBox.Size = new System.Drawing.Size(155, 21);
             this.eventViewComboBox.TabIndex = 1;
@@ -514,10 +512,10 @@ namespace ScoringSystemWinFormsUI
             this.event3ScoreColumn,
             this.event4ScoreColumn,
             this.event5ScoreColumn});
-            this.eventResultsTable.Location = new System.Drawing.Point(4, 38);
+            this.eventResultsTable.Location = new System.Drawing.Point(4, 65);
             this.eventResultsTable.Name = "eventResultsTable";
             this.eventResultsTable.ReadOnly = true;
-            this.eventResultsTable.Size = new System.Drawing.Size(501, 283);
+            this.eventResultsTable.Size = new System.Drawing.Size(500, 256);
             this.eventResultsTable.TabIndex = 0;
             this.eventResultsTable.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.eventResultsTable_CellValueChanged);
             // 
@@ -571,7 +569,7 @@ namespace ScoringSystemWinFormsUI
             this.totalsOutputTab.Location = new System.Drawing.Point(4, 22);
             this.totalsOutputTab.Name = "totalsOutputTab";
             this.totalsOutputTab.Padding = new System.Windows.Forms.Padding(3);
-            this.totalsOutputTab.Size = new System.Drawing.Size(507, 225);
+            this.totalsOutputTab.Size = new System.Drawing.Size(507, 313);
             this.totalsOutputTab.TabIndex = 1;
             this.totalsOutputTab.Text = "View Scores by Total";
             this.totalsOutputTab.UseVisualStyleBackColor = true;
@@ -608,7 +606,7 @@ namespace ScoringSystemWinFormsUI
             this.totalScoreTextBoxColumn});
             this.totalScoresOutputTable.Location = new System.Drawing.Point(6, 35);
             this.totalScoresOutputTable.Name = "totalScoresOutputTable";
-            this.totalScoresOutputTable.Size = new System.Drawing.Size(495, 195);
+            this.totalScoresOutputTable.Size = new System.Drawing.Size(495, 283);
             this.totalScoresOutputTable.TabIndex = 0;
             // 
             // contestantNameTextBoxColumn
@@ -650,7 +648,7 @@ namespace ScoringSystemWinFormsUI
             this.eventsGroupBox.Controls.Add(this.checkBoxEvent3);
             this.eventsGroupBox.Controls.Add(this.checkBoxEvent2);
             this.eventsGroupBox.Controls.Add(this.checkBoxEvent1);
-            this.eventsGroupBox.Location = new System.Drawing.Point(32, 57);
+            this.eventsGroupBox.Location = new System.Drawing.Point(32, 76);
             this.eventsGroupBox.Name = "eventsGroupBox";
             this.eventsGroupBox.Size = new System.Drawing.Size(200, 141);
             this.eventsGroupBox.TabIndex = 9;
@@ -660,7 +658,7 @@ namespace ScoringSystemWinFormsUI
             // singleEventCheckbox
             // 
             this.singleEventCheckbox.AutoSize = true;
-            this.singleEventCheckbox.Location = new System.Drawing.Point(32, 204);
+            this.singleEventCheckbox.Location = new System.Drawing.Point(32, 223);
             this.singleEventCheckbox.Name = "singleEventCheckbox";
             this.singleEventCheckbox.Size = new System.Drawing.Size(223, 17);
             this.singleEventCheckbox.TabIndex = 10;
@@ -720,17 +718,51 @@ namespace ScoringSystemWinFormsUI
             // spacesLeftListBox
             // 
             this.spacesLeftListBox.FormattingEnabled = true;
-            this.spacesLeftListBox.Location = new System.Drawing.Point(281, 30);
+            this.spacesLeftListBox.Location = new System.Drawing.Point(281, 46);
             this.spacesLeftListBox.Name = "spacesLeftListBox";
             this.spacesLeftListBox.Size = new System.Drawing.Size(191, 186);
             this.spacesLeftListBox.TabIndex = 11;
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(14, 14);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(274, 13);
+            this.label1.TabIndex = 5;
+            this.label1.Text = "First, Set Up the Events That the Tournament Will Have:";
+            // 
+            // nameInputTextBox
+            // 
+            this.nameInputTextBox.Location = new System.Drawing.Point(101, 46);
+            this.nameInputTextBox.Name = "nameInputTextBox";
+            this.nameInputTextBox.Size = new System.Drawing.Size(131, 20);
+            this.nameInputTextBox.TabIndex = 12;
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(29, 16);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(257, 13);
+            this.label2.TabIndex = 13;
+            this.label2.Text = "Next, Enter all of the Contestants That Will Take Part";
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(2, 9);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(396, 13);
+            this.label3.TabIndex = 3;
+            this.label3.Text = "Switch to View By: Rank to Input Ranks, Switch to View By: Score to View Scores";
             // 
             // ScoringProgram
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
-            this.ClientSize = new System.Drawing.Size(540, 396);
+            this.ClientSize = new System.Drawing.Size(539, 396);
             this.Controls.Add(this.clearDataButton);
             this.Controls.Add(this.writeToFileButton);
             this.Controls.Add(this.tabControl);
@@ -741,6 +773,7 @@ namespace ScoringSystemWinFormsUI
             this.Load += new System.EventHandler(this.ScoringProgram_Load);
             this.tabControl.ResumeLayout(false);
             this.setUpEventsPage.ResumeLayout(false);
+            this.setUpEventsPage.PerformLayout();
             this.numContestantsGroupBox.ResumeLayout(false);
             this.numContestantsGroupBox.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.event5NumContestants)).EndInit();
@@ -778,7 +811,6 @@ namespace ScoringSystemWinFormsUI
         public System.Windows.Forms.DataGridView totalScoresOutputTable;
         public System.Windows.Forms.DataGridView eventResultsTable;
         private System.Windows.Forms.TabControl tabControl;
-        private System.Windows.Forms.ComboBox nameInputComboBox;
         private System.Windows.Forms.Label viewByLabel;
         private System.Windows.Forms.ComboBox eventViewComboBox;
         private System.Windows.Forms.TabPage setUpEventsPage;
@@ -819,6 +851,10 @@ namespace ScoringSystemWinFormsUI
         private System.Windows.Forms.CheckBox checkBoxEvent2;
         private System.Windows.Forms.CheckBox checkBoxEvent1;
         private System.Windows.Forms.ListBox spacesLeftListBox;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.TextBox nameInputTextBox;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Label label3;
     }
 }
 
