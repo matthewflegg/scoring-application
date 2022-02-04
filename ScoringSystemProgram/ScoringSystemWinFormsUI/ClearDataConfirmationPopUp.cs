@@ -44,9 +44,9 @@ namespace ScoringSystemWinFormsUI
 
             // Call the clear score dictionaries and DGV method for both output tables on the main form 
             // Then show a message saying that the data was cleared successfully
-            Initialisation.scoringProgramMainWindow.ClearFieldsAndResetProgram();
-            Initialisation.scoringProgramMainWindow.ClearDataGridView(eventScoresOutputTable);
-            Initialisation.scoringProgramMainWindow.ClearDataGridView(totalScoresOutputTable);
+            Initialisation.scoringProgramMainWindow.ResetProgram();
+            Initialisation.scoringProgramMainWindow.ClearDGV(eventScoresOutputTable);
+            Initialisation.scoringProgramMainWindow.ClearDGV(totalScoresOutputTable);
             MessageBox.Show("The data was cleared successfully.", "Success");
 
             // Close window

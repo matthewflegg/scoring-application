@@ -16,7 +16,7 @@ namespace ScoringSystemWinFormsUI
         {
             InitializeComponent();
 
-            // Set sizes
+            // Set window's min & max size
             MinimumSize = new Size(555, 435);
             MaximumSize = new Size(555, 435);
         }
@@ -26,19 +26,16 @@ namespace ScoringSystemWinFormsUI
         #region Fields
 
         // Creating the eventScores and totalScores dictionaries 
-        public IDictionary<string, int[]> eventScores = new Dictionary<string, int[]>();
-        public IDictionary<string, int> totalScores = new Dictionary<string, int>();
+        public IDictionary<string, int[]> EventScores = new Dictionary<string, int[]>();
+        public IDictionary<string, int> TotalScores = new Dictionary<string, int>();
 
-        // Tells us if each contestant is in an event or not
-        // We use this to disable input and update the UI
-        public Dictionary<string, bool[]> eventsTakenPartIn = new Dictionary<string, bool[]>();
+        // Tells us if each contestant is in an event or not, used to disable input and update the UI
+        public Dictionary<string, bool[]> IsInEvents = new Dictionary<string, bool[]>();
 
-        // Array to store the number of contestants for each event
-        // We then use score numsOfContestants[eventNumber] - rank
-        private int[] numsOfContestants = new int[5];
-
-        // This will tell us how many spaces are left in each event
-        private int[] spacesLeftInEvents = new int[5];
+        // Arrays to store number of contestants per event
+        // And how many spaces are left in each event
+        private int[] NumEntrants = new int[5];
+        private int[] NumSpaces = new int[5];
 
         #endregion
 
@@ -50,14 +47,17 @@ namespace ScoringSystemWinFormsUI
         /// <param name="eventScores">The dictionary containing the event scores</param>
         /// <param name="totalScores">The dictionary containing the total scores</param>
         
-        public void ClearFieldsAndResetProgram()
+        public void ResetProgram()
         {
             // Overwrites data in dicts by assigning them empty dicts
-            eventScores = new Dictionary<string, int[]>();
-            totalScores = new Dictionary<string, int>();
-            eventsTakenPartIn = new Dictionary<string, bool[]>();
-            numsOfContestants = new int[5];
-            spacesLeftInEvents = new int[5];
+            EventScores = new Dictionary<string, int[]>();
+            TotalScores = new Dictionary<string, int>();
+            IsInEvents = new Dictionary<string, bool[]>();
+
+            // Reset numParticipants 
+            // And numSpacesLeft array
+            NumEntrants = new int[5];
+            NumSpaces = new int[5];
 
             // Selects view by rank by default
             eventViewComboBox.SelectedIndex = 1;
@@ -65,23 +65,66 @@ namespace ScoringSystemWinFormsUI
             // For each of the pages in our tabcontrol
             foreach (TabPage tp in tabControl.TabPages)
             {
-                // Disable all of them except the set up events page
-                if (tp.Name != "setUpEventsPage")
-                {
-                    ((Control)tp).Enabled = false;
-                }
+                // Enabled is true if the tabControl's name is "setUpEventsPage" else it's false/disabled
+                ((Control)tp).Enabled = tp.Name == "setUpEventsPage";
             }
 
             // Disable uneeded buttons before set up has finshed
             writeToFileButton.Enabled = false;
             clearDataButton.Enabled = false;
+
+            // Create an array of all of our event name text boxes to loop over           
+            TextBox[] eventNameTextboxes =
+            {
+                event1NameTextBox,
+                event2NameTextBox,
+                event3NameTextBox,
+                event4NameTextBox,
+                event5NameTextBox
+            };
+
+            // Create an array of all of our num. contestant numericUpDowns to loop over
+            NumericUpDown[] numContestantTextBoxes =
+            {
+                event1NumContestants,
+                event2NumContestants,
+                event3NumContestants,
+                event4NumContestants,
+                event5NumContestants
+            };
+
+            // Array of all our checkboxes for the events
+            CheckBox[] eventCheckBoxes =
+            {
+                checkBoxEvent1,
+                checkBoxEvent2,
+                checkBoxEvent3,
+                checkBoxEvent4,
+                checkBoxEvent5
+            };
+        
+            // Loop 5 times 
+            for (int i = 0; i < 5; i++)
+            {
+                // Reset event name inputs
+                // Reset num contestants inputs
+                // Reset the event check boxes
+                eventNameTextboxes[i].Text = "";
+                numContestantTextBoxes[i].Value = 10;
+                eventCheckBoxes[i].Checked = false;
+            }
+
+            // Clear list box, name text box and single event check box
+            spacesLeftListBox.Items.Clear();
+            nameInputTextBox.Text = "";
+            singleEventCheckbox.Checked = false;
         }
 
         /// <summary>
         /// Clears all of the data in a DataGridView and refreshes it.
         /// </summary>
 
-        public void ClearDataGridView(DataGridView dataGridViewToClear)
+        public void ClearDGV(DataGridView dataGridViewToClear)
         {
             // If the DataGridView isn't empty
             if (dataGridViewToClear.Rows.Count > 0)
@@ -99,7 +142,7 @@ namespace ScoringSystemWinFormsUI
         /// <param name="unsortedDictionary">The unsorted dictionary to sort</param>
         /// <returns>A copy of the unsorted dictionary, after being sorted by value</returns>
 
-        private IDictionary<string, int> InsertionSortDictionaryByValueAscending(IDictionary<string, int> unsortedDictionary)
+        private IDictionary<string, int> SortLowToHigh(IDictionary<string, int> unsortedDictionary)
         {
             // Takes a list and performs an insertion sort
             // Returns a copy of the list, but sorted
@@ -195,12 +238,12 @@ namespace ScoringSystemWinFormsUI
         /// <param name="unsortedDictionary">The unsorted dictionary to sort</param>
         /// <returns>A copy of the unsorted dictionary, after being sorted by value</returns>
 
-        private IDictionary<string, int> InsertionSortDictionaryByValueDescending(IDictionary<string, int> unsortedDictionary)
+        private IDictionary<string, int> SortHighToLow(IDictionary<string, int> unsortedDictionary)
         {
             // Sorts the dictionary by value, in ascending order
             // Then puts it in a new dictionary
             // Them, create an empty dictiary which we'll use to add values to 
-            IDictionary<string, int> sortedDictionaryAscending = InsertionSortDictionaryByValueAscending(unsortedDictionary);
+            IDictionary<string, int> sortedDictionaryAscending = SortLowToHigh(unsortedDictionary);
             IDictionary<string, int> sortedDictionaryDescending = new Dictionary<string, int>();
 
             // Start with the last item in the dictionary sorted by ascending order of value
@@ -219,20 +262,20 @@ namespace ScoringSystemWinFormsUI
         /// Copies the data in the total scores dictionary to the total scores output table.
         /// </summary>
 
-        private void CopyScoresFromTotalScoresToDataGridView()
+        private void OutputTotalScores()
         {
             // Clear table before writing data from totalScores to outputTable
             // Doing this because it prevents duplicated from being added
-            ClearDataGridView(totalScoresOutputTable);
+            ClearDGV(totalScoresOutputTable);
 
             // ***NOTE*** This only works if totalScores and the outputTable are in the same row
 
             // Loop over each row of the output table
-            for (int i = 0; i < totalScores.Count; i++)
+            for (int i = 0; i < TotalScores.Count; i++)
             {
                 // Get key and value from totalScores to use for comparisons
-                string currentKey = totalScores.ElementAt(i).Key;
-                string currentValue = totalScores.ElementAt(i).Value.ToString();
+                string currentKey = TotalScores.ElementAt(i).Key;
+                string currentValue = TotalScores.ElementAt(i).Value.ToString();
 
                 // Create a new array that contains the name and total score of a competitor
                 // Add the row to the DataGridView representing the output table
@@ -245,14 +288,14 @@ namespace ScoringSystemWinFormsUI
         /// Copies the data in the event scores dictionary to the event scores output table.
         /// </summary>
 
-        private void CopyScoresFromEventScoresToDataGridView()
+        private void OutputEventScores()
         {
             // Clear the DGV to prevent duplicates
-            ClearDataGridView(eventResultsTable);
+            ClearDGV(eventResultsTable);
 
             // Loop through each entry in the eventScores dictionary
             // This goes through all of the contestants
-            foreach (KeyValuePair<string, int[]> entry in eventScores)
+            foreach (KeyValuePair<string, int[]> entry in EventScores)
             {
                 // Get the contestant name
                 // Then get their scores in each event, stored in an array
@@ -284,23 +327,20 @@ namespace ScoringSystemWinFormsUI
                 // Then, finally, we add the row to the table
                 eventResultsTable.Rows.Add(newRow);
             }
-
-            // Then disable inputs/update UI for contestants not in an event
-            DisableInputForContestantsNotInAnEvent();
         }
         
         /// <summary>
         /// This code runs if the user switches the view on the event output tab to view by rank.
         /// </summary>
 
-        private void ConvertEventScoresToRanksAndCopyToDataGridView()
+        private void ShowEventRanksIO()
         {
             // Clear the DGV to prevent duplicates
-            ClearDataGridView(eventResultsTable);
+            ClearDGV(eventResultsTable);
 
             // Loop through each entry in the eventScores dictionary
             // This goes through all of the contestants
-            foreach (KeyValuePair<string, int[]> entry in eventScores)
+            foreach (KeyValuePair<string, int[]> entry in EventScores)
             {
                 // Get the contestant name
                 // Then get their scores in each event, stored in an array
@@ -328,15 +368,12 @@ namespace ScoringSystemWinFormsUI
                     // Example: The second row (index 1) gets the first score in tValues (index 0)
                     // Since we're converting the scores to ranks, we use 11 - score 
                     // This is because score = 11 - rank, so score + rank = 11, meaning rank = 11 - score
-                    newRow[i + 1] = (numsOfContestants[i] + 1 - currentValues[i]).ToString();
+                    newRow[i + 1] = (NumEntrants[i] + 1 - currentValues[i]).ToString();
                 }
 
                 // Then, finally, we add the row to the table
                 eventResultsTable.Rows.Add(newRow);
             }
-
-            // Then disable inputs/update UI for contestants not in an event
-            DisableInputForContestantsNotInAnEvent();
         }
 
         /// <summary>
@@ -346,7 +383,7 @@ namespace ScoringSystemWinFormsUI
         private void UpdateTotalScores()
         {
             // Loop through each entry in the eventScores dictionary
-            foreach (KeyValuePair<string, int[]> entry in eventScores)
+            foreach (KeyValuePair<string, int[]> entry in EventScores)
             {
                 string tKey = entry.Key; // Temporary variable to store name
                 int tValue = 0; // Temporary variable to store total score
@@ -360,16 +397,16 @@ namespace ScoringSystemWinFormsUI
                 }
 
                 // If the key is already in the totalScores dictionary
-                if (totalScores.ContainsKey(tKey))
+                if (TotalScores.ContainsKey(tKey))
                 {
                     // Update the value 
-                    totalScores[tKey] = tValue;
+                    TotalScores[tKey] = tValue;
                 }
 
                 else // If the key isn't already in totalScores
                 {
                     // Add the temporary key and value to total scores
-                    totalScores.Add(new KeyValuePair<string, int>(tKey, tValue));
+                    TotalScores.Add(new KeyValuePair<string, int>(tKey, tValue));
                 }
             }
         }
@@ -391,7 +428,7 @@ namespace ScoringSystemWinFormsUI
             }
 
             // Use regex to check if the name isn't made up of alphabetical characters only
-            if (!Regex.IsMatch(nameInput, @"^[a-zA-Z]+$"))
+            else if (!Regex.IsMatch(nameInput, @"^[a-zA-Z]+$"))
             {
                 // Show an error message saying that the name cannot contain any non-alphabetical characters
                 MessageBox.Show("The name cannot contain any non-alphabetical characters.", "Invalid Input");
@@ -436,7 +473,7 @@ namespace ScoringSystemWinFormsUI
             }
 
             // If int.TryParse returns false, a.k.a the string couldn't be converted to a number
-            if (!isNumber)
+            else if (!isNumber)
             {
                 // Display error message and return false
                 MessageBox.Show($"{rankInput} is not a valid input for the rank.", "Invalid Input");
@@ -444,16 +481,16 @@ namespace ScoringSystemWinFormsUI
             }           
 
             // If the rank is above 10
-            if (rank > numsOfContestants[eventIdx])
+            else if (rank > NumEntrants[eventIdx])
             {
                 // Display error message and return false
-                MessageBox.Show($"The rank cannot be above {numsOfContestants[eventIdx]}.\n" +
-                    $"This event has a maximum of {numsOfContestants[eventIdx]} contestants.", "Invalid Input");
+                MessageBox.Show($"The rank cannot be above {NumEntrants[eventIdx]}.\n" +
+                    $"This event has a maximum of {NumEntrants[eventIdx]} contestants.", "Invalid Input");
                 return false;
             }
 
             // If the rank is below 1
-            if (rank < 1)
+            else if (rank < 1)
             {
                 // Display error message and return false
                 MessageBox.Show("The rank cannot be below 1.", "Invalid Input");
@@ -476,15 +513,15 @@ namespace ScoringSystemWinFormsUI
             if (string.IsNullOrWhiteSpace(nameInput))
             {
                 // Show an error message saying that the name cannot be blank
-                MessageBox.Show($"The name of Event {eventIdx} cannot be left empty.", "Invalid Input");
+                MessageBox.Show($"The name of Event {eventIdx + 1} cannot be left empty.", "Invalid Input");
                 return false;
             }
 
             // Use regex to check if the name isn't made up of alphabetical characters only
-            if (!Regex.IsMatch(nameInput, @"^[a-zA-Z]+$"))
+            else if (!Regex.IsMatch(nameInput, @"^[a-zA-Z]+$"))
             {
                 // Show an error message saying that the name cannot contain any non-alphabetical characters
-                MessageBox.Show($"The name of Event {eventIdx} cannot contain any non-alphabetical characters.", "Invalid Input");
+                MessageBox.Show($"The name of Event {eventIdx + 1} cannot contain any non-alphabetical characters.", "Invalid Input");
                 return false;
             }
 
@@ -496,32 +533,35 @@ namespace ScoringSystemWinFormsUI
         /// Disables input in the event results table and updates the UI based on whether a contestant is in an event.
         /// </summary>
 
-        private void DisableInputForContestantsNotInAnEvent()
+        private void RestrictRankInputs()
         {
-            // For each contestant in our dictionary that tells us if a contestant is in an event
-            foreach (KeyValuePair<string, bool[]> entry in eventsTakenPartIn)
+            // Go through all of the rows in the events table
+            for (int i = 0; i < eventResultsTable.RowCount; i++)
             {
-                // Go through all of the rows in the event results DataGridView...
-                for (int i = 0; i < eventResultsTable.Rows.Count; i++)
+                // Get the name of the contestant from the first cell in the row
+                // Then we want to get the participatory statuses of the contestant in each event
+                string name = eventResultsTable.Rows[i].Cells[0].Value.ToString();
+                bool[] isInEvent = IsInEvents[name];
+             
+                // Then, for each of the events 
+                for (int j = 0; j < 5; j++)
                 {
-                    // ...Once we've found the contestant 
-                    if ((string)eventResultsTable.Rows[i].Cells[0].Value == entry.Key)
-                    {
-                        // Loop over all the values that tell us if they're in the events
-                        for (int j = 0; j < 5; j++)
-                        {
-                            // If they're not in the event
-                            if (entry.Value[j] == false)
-                            {
-                                // Disable input
-                                // Then set the colour to grey so the user knows its disabled
-                                eventResultsTable.Rows[i].Cells[j + 1].ReadOnly = true;
-                                eventResultsTable.Rows[i].Cells[j + 1].Style.BackColor = Color.Gray;
-                            }
-                        }
-                    }
+                    // Get the cell that corresponds to the name and event in our array
+                    DataGridViewCell currentCell = eventResultsTable.Rows[i].Cells[j + 1];
+
+                    // Change the colour to grey if the user isn't in the event. Else turn it to white if they are in the event
+                    // Then we want to make it so that the user can't enter any data for the contestant's rank if not in the event
+                    currentCell.Style.BackColor = new Color[2] { Color.Gray, Color.White }[Convert.ToInt32(isInEvent[j])];
+
+                    if (!isInEvent[j])
+                        currentCell.ReadOnly = true;
                 }
+
+                eventResultsTable.Rows[i].Cells[0].ReadOnly = true;
             }
+
+            // Then disallow user to change name
+            eventResultsTable.Columns[0].ReadOnly = true;
         }
 
         #endregion
@@ -540,14 +580,17 @@ namespace ScoringSystemWinFormsUI
             if (tabControl.SelectedTab == tabControl.TabPages["totalsOutputTab"])
             {          
                 // Then copy the data from the dictionary to the output table
-                CopyScoresFromTotalScoresToDataGridView();
+                OutputTotalScores();
             }
 
             // Once the selected tab is changed, check if it's the event scores output tab
             else if (tabControl.SelectedTab == tabControl.TabPages["eventViewTab"])
             {
                 // Copy scores from dictionary to DGV
-                CopyScoresFromEventScoresToDataGridView();
+                OutputEventScores();
+
+                // Disable inputs for all the cells where a contestant isn't in an event
+                RestrictRankInputs();
             }
         }
 
@@ -612,7 +655,7 @@ namespace ScoringSystemWinFormsUI
             }
 
             // Finally, add all of the contestants to the input and output table
-            if (eventScores.ContainsKey(name))
+            if (EventScores.ContainsKey(name))
             {
                 MessageBox.Show($"{name} has already been entered as a contestant.", "Contestant Already Entered");
                 return;
@@ -622,7 +665,7 @@ namespace ScoringSystemWinFormsUI
             for (int i = 0; i < 5; i++)
             {
                 // If the button is checked but there aren't any spaces left 
-                if (eventCheckBoxes[i].Checked && spacesLeftInEvents[i] <= 0)
+                if (eventCheckBoxes[i].Checked && NumSpaces[i] <= 0)
                 {
                     // Show an error message, telling the user which event doesn't have any spaces left, then return
                     MessageBox.Show($"There are no more spaces left in the following event: {eventCheckBoxes[i].Text}",
@@ -631,29 +674,29 @@ namespace ScoringSystemWinFormsUI
                 }
 
                 // If the radio button is checked, and if there is at least one space left in the event
-                if (eventCheckBoxes[i].Checked && spacesLeftInEvents[i] > 0)
+                if (eventCheckBoxes[i].Checked && NumSpaces[i] > 0)
                 {
                     // Take one away from the spaces left 
-                    spacesLeftInEvents[i] -= 1;
+                    NumSpaces[i] -= 1;
                 }                
             }         
 
             // Add the contestant to the event scores dictionary with scores of 0
             // And add them to the events taken part in dictionary, by default they're in all events but we'll change this
-            eventScores[name] = new int[5] { 0, 0, 0, 0, 0 };
-            eventsTakenPartIn[name] = new bool[5] { true, true, true, true, true };
+            EventScores[name] = new int[5] { 0, 0, 0, 0, 0 };
+            IsInEvents[name] = new bool[5] { true, true, true, true, true };
 
             // Then loop 5 times
             for (int i = 0; i < 5; i++)
             {
                 // Update the spaces left list box
-                spacesLeftListBox.Items[i] = ($"{eventCheckBoxes[i].Text} | Spaces: {spacesLeftInEvents[i]}");
+                spacesLeftListBox.Items[i] = ($"{eventCheckBoxes[i].Text} | Spaces: {NumSpaces[i]}");
 
                 // If the contestant isn't in the event
                 if (!eventCheckBoxes[i].Checked)
                 {
                     // Set the bool that tells us if they take part in that event to false
-                    eventsTakenPartIn[name][i] = false;
+                    IsInEvents[name][i] = false;
                 }          
             }
 
@@ -661,10 +704,10 @@ namespace ScoringSystemWinFormsUI
             int numEventsWithNoSpaces = 0;
             
             // Loop over all the events
-            for (int i = 0; i < spacesLeftInEvents.Length; i++)
+            for (int i = 0; i < NumSpaces.Length; i++)
             {
                 // If the event has no spaces
-                if (spacesLeftInEvents[i] == 0)
+                if (NumSpaces[i] == 0)
                 {
                     // Add 1 to the counter
                     numEventsWithNoSpaces++;
@@ -701,25 +744,25 @@ namespace ScoringSystemWinFormsUI
         {
             // Create an array to store all of the scores in
             // Set the length to the number of scores there are, so we have the right amount of items
-            string[] scoresArray = new string[eventScores.Count];
+            string[] scoresArray = new string[EventScores.Count];
 
             // For each empty item in the array that will store our scores as a string
             for (int i = 0; i < scoresArray.Length; i++)
             {
                 // Add the contestant's name, which is the key of either eventScores or totalScores
                 // I'm using eventScores but it doesn't really matter which one I use.
-                scoresArray[i] = $"{eventScores.ElementAt(i).Key}: ";
+                scoresArray[i] = $"{EventScores.ElementAt(i).Key}: ";
 
                 // Loop through each score for that competitor. It's stored in an array as the value
-                for (int j = 0; j < eventScores.ElementAt(i).Value.Length; j++)
+                for (int j = 0; j < EventScores.ElementAt(i).Value.Length; j++)
                 {
                     // Add each score (each j) for the competitor (each i) to the string 
-                    scoresArray[i] += $"{eventScores.ElementAt(i).Value[j]} ";
+                    scoresArray[i] += $"{EventScores.ElementAt(i).Value[j]} ";
                 }
 
                 // Finally, add the total score for that competitor to the string
                 // Then move on to the next so that we have a string representation of their scores 
-                scoresArray[i] += $"| Total: {totalScores.ElementAt(i).Value}";
+                scoresArray[i] += $"| Total: {TotalScores.ElementAt(i).Value}";
             }
 
             // Create a new SaveFileDialog, which gives the user a GUI for saving a file
@@ -790,8 +833,8 @@ namespace ScoringSystemWinFormsUI
         {
             // Call sort method to sort the dictionary by value
             // And copy  the data from the dictionary to the output table
-            totalScores = InsertionSortDictionaryByValueAscending(totalScores);
-            CopyScoresFromTotalScoresToDataGridView();
+            TotalScores = SortLowToHigh(TotalScores);
+            OutputTotalScores();
         }
 
         /// <summary>
@@ -804,8 +847,8 @@ namespace ScoringSystemWinFormsUI
         {
             // Call sort method to sort the dictionary by value
             // And copy  the data from the dictionary to the output table
-            totalScores = InsertionSortDictionaryByValueDescending(totalScores);
-            CopyScoresFromTotalScoresToDataGridView();
+            TotalScores = SortHighToLow(TotalScores);
+            OutputTotalScores();
         }     
 
         /// <summary>
@@ -845,7 +888,7 @@ namespace ScoringSystemWinFormsUI
             string name = eventResultsTable.Rows[changedRowIndex].Cells[0].Value.ToString();
 
             // Loop through all of the event scores
-            foreach (KeyValuePair<string, int[]> contestant in eventScores)
+            foreach (KeyValuePair<string, int[]> contestant in EventScores)
             {
                 // If the name is in there
                 if (name == contestant.Key)
@@ -853,7 +896,7 @@ namespace ScoringSystemWinFormsUI
                     // Set the value at index changedColIndex to the changed value
                     // This is because in the DGV, event 1 is at col index 1, event 2 is at col index 2 etc..
                     // But in eventScores, the value is an array where event 1 is index 0, event 2 is index 1 etc..
-                    contestant.Value[changedColIndex - 1] = numsOfContestants[changedColIndex - 1] + 1 - changedRank; 
+                    contestant.Value[changedColIndex - 1] = NumEntrants[changedColIndex - 1] + 1 - changedRank; 
                 }
             }
 
@@ -875,10 +918,12 @@ namespace ScoringSystemWinFormsUI
             // Scores is the first option so its index is 0, an index of -1 means nothing is selected
             if (eventViewComboBox.SelectedIndex <= 0)
             {
-                CopyScoresFromEventScoresToDataGridView();
+                OutputEventScores();
 
                 // If viewing by score, we don't want the user to edit anything
                 eventResultsTable.ReadOnly = true;
+
+                RestrictRankInputs();
             }
 
             // If the user chooses to view the event output table by rank
@@ -886,10 +931,13 @@ namespace ScoringSystemWinFormsUI
             // Ranks is the second option so its index is 1
             else if (eventViewComboBox.SelectedIndex == 1)
             {
-                ConvertEventScoresToRanksAndCopyToDataGridView();
+                ShowEventRanksIO();
 
                 // If viewing by rank, we want them to be able to edit it so set read only to true
                 eventResultsTable.ReadOnly = false;
+
+                // Disable inputs for all the cells where a contestant isn't in an event
+                RestrictRankInputs();
             }
         }
 
@@ -954,8 +1002,8 @@ namespace ScoringSystemWinFormsUI
                 eventResultsTable.Columns[i + 1].HeaderText = currentEventName;
 
                 // Then add the num contestants in the event to the array
-                numsOfContestants[i] = currentEventNumContestants;
-                spacesLeftInEvents[i] = numsOfContestants[i];
+                NumEntrants[i] = currentEventNumContestants;
+                NumSpaces[i] = NumEntrants[i];
 
                 // Then add the event to the list box on the enter contestants page that shows spaces left
                 spacesLeftListBox.Items.Add($"{eventCheckBoxes[i].Text} | Spaces: {(int)numContestantTextBoxes[i].Value}");
